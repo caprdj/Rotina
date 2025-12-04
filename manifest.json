@@ -1,0 +1,23 @@
+{
+  "name": "Rotina 14 Dias — Fibro",
+  "short_name": "Rotina Fibro",
+  "description": "App pessoal da Caroline para organizar alimentação, exercícios e casa em ciclos de 14 dias, pensado para fibromialgia.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f5fa",
+  "theme_color": "#4b7bec",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
