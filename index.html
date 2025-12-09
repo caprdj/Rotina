@@ -1064,6 +1064,7 @@ state.flexHistory = [];
         {id:"cafe11",nome:"🥚 Ovos mexidos + fruta",instrucao:"✔️ Perfeito para RI. ●  Receita: Mexa 2 ovos com sal; sirva com 1 fruta de baixo IG (kiwi, morango, maçã)."},
        {id:"cafe12",nome:"🥞 Aveioca (aveia + ovo)",instrucao:"✔️ Boa para RI. ●  Receita: 1 ovo + 2 colheres de aveia + pitada de sal. Frite como uma crepioca. ● Dica: adicione cúrcuma para anti-inflamatório."},
          {id:"cafe13",nome:"🍌 Banana + castanhas (baixa energia)",instrucao:"✔️ Ok para RI se usar banana pequena. ● Receita: Corte a banana, coloque castanhas por cima. ● Dica: adicione chia → baixa IG."},
+         {id:"out",nome:"Outro",instrucao:""},
           
           
         ]
@@ -1074,7 +1075,8 @@ state.flexHistory = [];
           {id:"lm2",nome:"🥜 Castanha-do-pará / nozes",instrucao:"✔️ Ótimo para RI. ●  Receita: 2 unidades, não mais (muita gordura = inflamação)."},
           {id:"lm3",nome:"🥑 Creme de abacate",instrucao:"✔️ Perfeito para RI e anti-inflamatório. ● Receita: amasse ½ abacate + limão + canela."},
           {id:"lm4",nome:"🍓 Vitamina de frutas vermelhas + leite vegetal",instrucao:"✔️ Excelente para RI. ● Receita: ½ xícara de morangos congelados + leite vegetal + 1 colher chia."},
-          {id:"lm5",nome:"🍌 Banana + cacau 100%",instrucao:"✔️ Usar banana pequena. ● Receita: amasse banana, misture cacau e canela."}
+          {id:"lm5",nome:"🍌 Banana + cacau 100%",instrucao:"✔️ Usar banana pequena. ● Receita: amasse banana, misture cacau e canela."},
+          {id:"out",nome:"Outro",instrucao:""},
         ]
       },
       almoco:{ label:"Almoço", icon:"🍛",
@@ -1092,7 +1094,8 @@ state.flexHistory = [];
           {id:"al11",nome:"🍠 Purê de batata-doce + carne moída",instrucao:"✔️ Bom para RI se porção pequena (4 colheres)."},
           {id:"al12",nome:"🧆 Grão-de-bico + arroz + abobrinha",instrucao:"✔️ Riquíssimo em fibra. ● Receita: junte na panela e aqueça com cúrcuma + limão."},
           {id:"al13",nome:"🥗 Legumes Assados + Frango + Salada",instrucao:"Receita rápida dos legumes: Misture: abobrinha + cenoura + brócolis + cebola. Tempere com azeite, sal, páprica e alecrim. 20–25 min no forno ou airfryer (pré-assado e congelado). ● Frango rapidinho: Tempere com sal, alho, limão e páprica. 3–4 min de cada lado na frigideira. ● Dicas anti-inflamatórias: Use cúrcuma no frango. Adicione gergelim por cima. Vantagem RI: baixo índice glicêmico, muita fibra e proteína."},
-          {id:"al14",nome:"🌿 Finalizações anti-inflamatórias: Cúrcuma fria. Gergelim. Cebolinha. Azeite extravirgem. ✔️ Todas compatíveis com RI.",instrucao:""}
+          {id:"al14",nome:"🌿 Finalizações anti-inflamatórias: Cúrcuma fria. Gergelim. Cebolinha. Azeite extravirgem. ✔️ Todas compatíveis com RI.",instrucao:""},
+          {id:"out",nome:"Outro",instrucao:""},
          
          
           
@@ -1106,7 +1109,8 @@ state.flexHistory = [];
           {id:"lt3",nome:"🍿 Pipoca na Água",instrucao:"Ingredientes: 2–3 colheres de milho, 1 colher de sopa de água, Sal e temperos a gosto. ● Tempere depois ● Por que é boa? ✔️ Quase sem calorias ✔️ Sem gordura inflamatória ✔️ Ótima para comer à noite. 🍿 Porção Ideal:✔️ 1 tigela pequena (≈ 3 xícaras de pipoca estourada)• Mantém a glicemia estável e evita exageros."},
           {id:"lt4",nome:"🍿 Pipoca Turbinada Antioxidante",instrucao:"Para temperar depois de pronta: ½ colher de chá de cúrcuma. Pitada de pimenta-do-reino. Páprica. Fio finíssimo de azeite. Alecrim em pó ● Por que funciona: ✔️ Anti-inflamatório completo ✔️ Ajuda na dor músculo-esquelética ✔️ Dá saciedade e controla glicemia. 🍿 Porção Ideal:✔️ 1 tigela pequena (≈ 3 xícaras de pipoca estourada)• Mantém a glicemia estável e evita exageros."},
           {id:"lt5",nome:"🍿 Pipoca “Sabor Queijo” sem lactose",instrucao:"Faça a pipoca (versão leve ou clássica). Polvilhe nutritional yeast por cima. Misture com colher ou sacudindo o pote. ● Sabor: 🔸 Fica com gosto de queijo parmesão! 🔸 100% seguro para fibro + RI. 🍿 Porção Ideal:✔️ 1 tigela pequena (≈ 3 xícaras de pipoca estourada)• Mantém a glicemia estável e evita exageros."},
-          {id:"lt6",nome:"🍿 Pipoca Doce Leve (sem açúcar)",instrucao:"Canela, ½ colher de cacau 100% ● Opcional: 1 tiquinho de stevia se quiser doce ● Modo: Polvilhe tudo por cima e mexa. ● Por que é boa? ✔️ Não usa açúcar ✔️ Sabor de “pipoca doce” sem subir glicose.  🍿 Porção Ideal:✔️ 1 tigela pequena (≈ 3 xícaras de pipoca estourada)• Mantém a glicemia estável e evita exageros."}
+          {id:"lt6",nome:"🍿 Pipoca Doce Leve (sem açúcar)",instrucao:"Canela, ½ colher de cacau 100% ● Opcional: 1 tiquinho de stevia se quiser doce ● Modo: Polvilhe tudo por cima e mexa. ● Por que é boa? ✔️ Não usa açúcar ✔️ Sabor de “pipoca doce” sem subir glicose.  🍿 Porção Ideal:✔️ 1 tigela pequena (≈ 3 xícaras de pipoca estourada)• Mantém a glicemia estável e evita exageros."},
+          {id:"out",nome:"Outro",instrucao:""},
           
         ]
       },
@@ -1123,7 +1127,8 @@ state.flexHistory = [];
           {id:"ja8",nome:"🥣 Sopa caseira congelada",instrucao:"→ finalize com azeite."},
           
           {id:"ja9",nome:"🥗 Bowl rápido (arroz + proteína + legumes)",instrucao:"Receita: misture tudo em uma tigela e finalize com limão."},
-          {id:"ja10",nome:"🎃 Purê + frango (Versão conforto.)",instrucao:"Receita: purê descongelado + frango desfiado."}
+          {id:"ja10",nome:"🎃 Purê + frango (Versão conforto.)",instrucao:"Receita: purê descongelado + frango desfiado."},
+          {id:"out",nome:"Outro",instrucao:""},
         ]
       },
       ceia:{ label:"Ceia", icon:"🌙",
@@ -1131,7 +1136,8 @@ state.flexHistory = [];
           {id:"ce1",nome:"🌼 Chá de camomila",instrucao:"Camomila, erva-doce, cidreira. ✔️ relaxa para dor e sono. "},
           {id:"ce2",nome:"🍌 Banana + cacau",instrucao:"✔️ pequena porção."},
           {id:"ce3",nome:"🥝 Kiwi",instrucao:"✔️ baixo IG."},
-           {id:"ce4",nome:"🍎 Fruta leve",instrucao:"maçã, morango, pêra."}
+           {id:"ce4",nome:"🍎 Fruta leve",instrucao:"maçã, morango, pêra."},
+           {id:"out",nome:"Outro",instrucao:""},
         ]
       }
     };
@@ -3813,3 +3819,4 @@ if (btnDownloadCycleHistory) {
   </script>
 </body>
 </html>
+
