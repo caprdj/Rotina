@@ -15,7 +15,8 @@
       --muted: #666;
       --border: #ddd;
       --danger: #eb3b5a;
-      --pill-bg: #eef2ff2;
+      --pill-bg: #eef2ff;
+
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -209,11 +210,17 @@
       line-height: 1.4;
     }
     .flex-between {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.4rem;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
     .mt-4 { margin-top: 0.8rem; }
 
     @media (min-width: 720px) {
@@ -543,8 +550,8 @@
   </style>
 </head>
 <body>
-  <!-- CABEÇALHO -->
- <header class="card">
+   <!-- CABEÇALHO -->
+  <header class="card">
     <div class="header-main-top">
       <div>
         <h1>Rotina Fibro - Caroline Peixoto</h1>
@@ -554,12 +561,7 @@
         <span class="badge primary">🪻</span>
       </div>
     </div>
- 
-     <div class="header-main-top-right">
-    
-</div>
 
- <header class="card">
     <!-- Abas -->
     <div class="tabs-header pill-group">
       <button type="button" class="tab-button active" data-tab="tabAlimentacao">
@@ -593,6 +595,7 @@
       </div>
     </div>
   </header>
+
 
   <!-- ALIMENTAÇÃO -->
   <section id="tabAlimentacao" class="tab-panel active">
@@ -825,11 +828,6 @@ const btnRestartCycle = document.getElementById("btnRestartCycle"); // 👈 AQUI
 
 
 /* ⭐⭐⭐ AQUI ENTRA O SEU TRECHO ⭐⭐⭐ */
-if (btnRestartCycle) {
-  btnRestartCycle.addEventListener("click", restartCycle);
-}
-
-
 
 
     // Alimentação
@@ -857,6 +855,14 @@ if (btnRestartCycle) {
     const casaContextLabel = document.getElementById("casaContextLabel");
     const cycleHistoryContent = document.getElementById("cycleHistoryContent");
 const btnDownloadCycleHistory = document.getElementById("btnDownloadCycleHistory");
+
+// Liga botões de ciclo, se existirem
+if (btnRestartCycle) {
+  btnRestartCycle.addEventListener("click", restartCycle);
+}
+if (btnDownloadCycleHistory) {
+  btnDownloadCycleHistory.addEventListener("click", downloadCycleHistoryTxt);
+}
 
     
     /* MODAL DE EDIÇÃO */
@@ -895,6 +901,7 @@ let currentExEdit = null; // { day, exId }
     /* ESTADO */
     const STORAGE_KEY = "app_fibro_estado_v4";
     let state = {
+        selectedDay: 1,  
   dayMeta: {},
   energyMeta: {},
   foodState: {},
@@ -921,6 +928,15 @@ let currentExEdit = null; // { day, exId }
 
     // mescla o que já existe com o salvo
     state = Object.assign(state, parsed);
+        // Garantir que selectedDay seja válido (1 a 14)
+    if (
+      typeof state.selectedDay !== "number" ||
+      state.selectedDay < 1 ||
+      state.selectedDay > 14
+    ) {
+      state.selectedDay = 1;
+    }
+
 
     // garantias de campos
     state.cycleHistory    = parsed.cycleHistory    || [];
@@ -943,56 +959,69 @@ let currentExEdit = null; // { day, exId }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       }catch(e){ console.warn("Erro ao salvar estado:",e); }
     }
-   function restartCycle() {
+  
+  function restartCycle() {
   const ok = confirm(
     "Reiniciar ciclo de 14 dias?\n\n" +
     "• O ciclo atual será arquivado no histórico.\n" +
     "• As marcações de alimentação, exercícios e casa serão limpas.\n" +
-    "• As opções de comida, exercícios e tarefas personalizadas serão mantidas."
+    "• As opções personalizadas serão mantidas."
   );
   if (!ok) return;
 
   if (!state.cycleHistory) state.cycleHistory = [];
 
+  // Snapshot do ciclo atual
   const snapshot = {
-  timestamp: new Date().toISOString(),
-  dayMeta: state.dayMeta,
-  energyMeta: state.energyMeta,
-  foodState: state.foodState,
-  exState: state.exState,               // 👈 corrige aqui
-  domesticDone: state.domesticDone,
-  domesticIgnored: state.domesticIgnored,
-  domesticReagendado: state.domesticReagendado,
-  flexHistory: state.flexHistory
-};
+    timestamp: new Date().toISOString(),
+    dayMeta: state.dayMeta,
+    energyMeta: state.energyMeta,
+    foodState: state.foodState,
+    exState: state.exState,
+    domesticDone: state.domesticDone,
+    domesticIgnored: state.domesticIgnored,
+    domesticReagendado: state.domesticReagendado,
+    flexHistory: state.flexHistory
+  };
 
-state.cycleHistory.push(snapshot);
+  state.cycleHistory.push(snapshot);
 
-// limpa dados “do ciclo”
-state.dayMeta = {};
-state.energyMeta = {};
-state.foodState = {};
-state.exState = {};                     // 👈 e aqui
-state.domesticDone = {};
-state.domesticIgnored = {};
-state.domesticReagendado = {};
-state.flexList = [];
-state.flexHistory = [];
+  // Limpa dados do ciclo
+  state.dayMeta = {};
+  state.energyMeta = {};
+  state.foodState = {};
+  state.exState = {};
+  state.domesticDone = {};
+  state.domesticIgnored = {};
+  state.domesticReagendado = {};
+  state.flexList = [];
+  state.flexHistory = [];
+  state.selectedDay = 1;
 
-  // volta para Dia 1, Alta, Casa
-  daySelect.value = "1";
+  // Volta para Dia 1, Alta, Casa visualmente
+  if (daySelect) {
+    daySelect.value = "1";
+  }
 
-  Array.from(energyChips.querySelectorAll(".chip")).forEach((c) => {
-    c.classList.toggle("active", c.getAttribute("data-energy") === "alta");
-  });
+  if (energyChips) {
+    Array.from(energyChips.querySelectorAll(".chip")).forEach((c) => {
+      c.classList.toggle("active", c.getAttribute("data-energy") === "alta");
+    });
+  }
 
-  Array.from(contextChips.querySelectorAll(".chip")).forEach((c) => {
-    c.classList.toggle("active", c.getAttribute("data-context") === "casa");
-  });
+  if (contextChips) {
+    Array.from(contextChips.querySelectorAll(".chip")).forEach((c) => {
+      c.classList.toggle("active", c.getAttribute("data-context") === "casa");
+    });
+  }
 
   persistState();
-  renderAll && renderAll();
+
+  if (typeof renderAll === "function") {
+    renderAll();
+  }
 }
+
 
 
     /* DIA / ENERGIA / CONTEXTO */
@@ -1012,7 +1041,12 @@ state.flexHistory = [];
       opt.textContent=`Dia ${i} (${getWeekdayLabel(i)})`;
       daySelect.appendChild(opt);
     }
-    daySelect.addEventListener("change",()=>renderAll());
+    daySelect.addEventListener("change", () => {
+  state.selectedDay = getSelectedDay();
+  persistState();
+  renderAll();
+});
+
 
     energyChips.addEventListener("click",e=>{
       const btn=e.target.closest(".chip"); if(!btn) return;
@@ -1775,7 +1809,7 @@ if (editFoodModal) {
       document.body.appendChild(a); a.click();
       document.body.removeChild(a); URL.revokeObjectURL(url);
     }
-    function computeCycleFoodStats(foodStateSnapshot) {
+    function computeCycleFoodStats(foodStateSnapshot, dayMetaSnapshot) {
   const optionsState = ensureFoodOptionsState();
   const mealOrder = ["cafe", "lancheManha", "almoco", "lancheTarde", "jantar", "ceia"];
 
@@ -1785,12 +1819,21 @@ if (editFoodModal) {
   let total = 0;
 
   for (let d = 1; d <= 14; d++) {
+    // Se vier um mapa de contextos no snapshot, usamos; senão consideramos "casa"
+    const ctx =
+      (dayMetaSnapshot && (dayMetaSnapshot[d] || dayMetaSnapshot[String(d)])) ||
+      "casa";
+
+    // Se quiser manter a regra de não contar viagem/pausa:
+    if (ctx === "viagem" || ctx === "pausa") continue;
+
     const dayMeals = foodStateSnapshot[d] || foodStateSnapshot[String(d)];
     if (!dayMeals || !dayMeals.meals) continue;
 
     mealOrder.forEach((mealKey) => {
       const cfg = optionsState[mealKey];
       if (!cfg) return;
+
       const mealState = dayMeals.meals[mealKey];
       if (!mealState) return;
 
@@ -1829,25 +1872,187 @@ if (editFoodModal) {
   };
 }
 
-function computeCycleExerciseStats(exDoneSnapshot) {
-  let diasComMov = 0;
-  const totalDias = 14;
 
-  for (let d = 1; d <= 14; d++) {
-    const dayEx = exDoneSnapshot[d] || exDoneSnapshot[String(d)];
-    if (!dayEx) continue;
-    const anyDone = Object.values(dayEx).some((v) => !!v);
-    if (anyDone) diasComMov++;
+function computeCycleExerciseStats(exSnapshot) {
+  const totalDias = 14;
+  let diasComMov = 0;
+
+  // Verifica recursivamente se há algum "done: true" ou boolean true
+  function hasDone(obj) {
+    if (!obj || typeof obj !== "object") return false;
+    let found = false;
+
+    function dive(o) {
+      if (!o || typeof o !== "object" || found) return;
+      for (const v of Object.values(o)) {
+        if (found) return;
+        if (typeof v === "boolean") {
+          if (v) {
+            found = true;
+            return;
+          }
+        } else if (v && typeof v === "object") {
+          if ("done" in v) {
+            if (v.done) {
+              found = true;
+              return;
+            }
+          } else {
+            // desce mais um nível (caso tenha energia/contexto dentro)
+            dive(v);
+          }
+        }
+      }
+    }
+
+    dive(obj);
+    return found;
   }
 
-  const percDiasMov = totalDias ? Math.round((diasComMov / totalDias) * 100) : 0;
+  for (let d = 1; d <= totalDias; d++) {
+    const dayEx = exSnapshot[d] || exSnapshot[String(d)];
+    if (!dayEx) continue;
+    if (hasDone(dayEx)) diasComMov++;
+  }
 
-  return {
-    diasComMov,
-    totalDias,
-    percDiasMov
-  };
+  const percDiasMov = totalDias
+    ? Math.round((diasComMov / totalDias) * 100)
+    : 0;
+
+  return { diasComMov, totalDias, percDiasMov };
 }
+
+
+function renderCycleHistoryBlock() {
+  if (!cycleHistoryContent) return;
+
+  const hist = state.cycleHistory || [];
+  cycleHistoryContent.innerHTML = "";
+
+  if (!hist.length) {
+    cycleHistoryContent.innerHTML =
+      '<div class="empty-message">Ainda não há ciclos encerrados. Quando você usar "Reiniciar ciclo", o resumo do ciclo atual aparece aqui. 💾</div>';
+    return;
+  }
+
+  // Mostra do mais recente para o mais antigo
+  const list = hist.slice().reverse();
+
+  list.forEach((snap, idx) => {
+    const numeroCiclo = hist.length - idx;
+    const when = snap.timestamp ? new Date(snap.timestamp) : null;
+    const whenLabel = when
+      ? when.toLocaleString("pt-BR", {
+          dateStyle: "short",
+          timeStyle: "short"
+        })
+      : "data desconhecida";
+
+    const foodStats = computeCycleFoodStats(
+      snap.foodState || {},
+      snap.dayMeta || {}
+    );
+    const exStats = computeCycleExerciseStats(snap.exState || {});
+
+    const wrap = document.createElement("div");
+    wrap.className = "meal-card"; // reaproveita estilo bonitinho
+
+    wrap.innerHTML = `
+      <div class="flex-between">
+        <div>
+          <div class="section-title">
+            <span class="icon">📅</span>
+            <span>Ciclo ${numeroCiclo}</span>
+          </div>
+          <div class="mini-text">Encerrado em ${whenLabel}</div>
+        </div>
+      </div>
+      <div class="stats-row" style="margin-top:.35rem;">
+        <span class="stats-chip">
+          Refeições dentro: ${foodStats.dentro}/${foodStats.total} (${foodStats.percDentro}%)
+        </span>
+        <span class="stats-chip">
+          Puladas: ${foodStats.pulado} (${foodStats.percPulado}%)
+        </span>
+        <span class="stats-chip">
+          Não segui: ${foodStats.naoCumpri} (${foodStats.percNao}%)
+        </span>
+      </div>
+      <div class="stats-row" style="margin-top:.25rem;">
+        <span class="stats-chip">
+          Dias com movimento: ${exStats.diasComMov}/${exStats.totalDias} (${exStats.percDiasMov}%)
+        </span>
+      </div>
+    `;
+
+    cycleHistoryContent.appendChild(wrap);
+  });
+}
+
+function downloadCycleHistoryTxt() {
+  const hist = state.cycleHistory || [];
+  if (!hist.length) {
+    alert(
+      "Ainda não há ciclos encerrados para baixar.\n\n" +
+      "Use o botão “Reiniciar ciclo” quando completar um ciclo de 14 dias."
+    );
+    return;
+  }
+
+  const lines = [];
+  const now = new Date();
+  lines.push("Histórico de ciclos – Rotina Fibro");
+  lines.push(
+    `Arquivo gerado em: ${now.toLocaleDateString("pt-BR")} ${now.toLocaleTimeString("pt-BR")}`
+  );
+  lines.push("");
+
+  hist.forEach((snap, i) => {
+    const num = i + 1;
+    const when = snap.timestamp ? new Date(snap.timestamp) : null;
+    const whenLabel = when
+      ? when.toLocaleString("pt-BR", {
+          dateStyle: "short",
+          timeStyle: "short"
+        })
+      : "(sem data registrada)";
+
+    const foodStats = computeCycleFoodStats(
+      snap.foodState || {},
+      snap.dayMeta || {}
+    );
+    const exStats = computeCycleExerciseStats(snap.exState || {});
+
+    lines.push(`===== Ciclo ${num} =====`);
+    lines.push(`Encerrado em: ${whenLabel}`);
+    lines.push(
+      `Alimentação: ${foodStats.dentro}/${foodStats.total} refeições dentro do combinado (${foodStats.percDentro}%)`
+    );
+    lines.push(
+      `  • Puladas: ${foodStats.pulado} (${foodStats.percPulado}%)`
+    );
+    lines.push(
+      `  • Não segui: ${foodStats.naoCumpri} (${foodStats.percNao}%)`
+    );
+    lines.push(
+      `Exercícios: ${exStats.diasComMov}/${exStats.totalDias} dias com movimento (${exStats.percDiasMov}%)`
+    );
+    lines.push("");
+  });
+
+  const blob = new Blob([lines.join("\n")], {
+    type: "text/plain;charset=utf-8"
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "historico_ciclos_rotina_fibro.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 
 
     /* ================= EXERCÍCIOS ================= */
@@ -3202,6 +3407,10 @@ if (ctx === "pausa") {
   return;
 }
 
+
+
+
+
 const cfg = getDomesticDayConfig(day);
 let filtered = filterDomesticByContext(day, ctx, cfg);
 
@@ -3743,38 +3952,89 @@ function getDomesticTaskIdsForDay(day) {
 }
 
 
-    /* ========== INICIALIZAÇÃO ========== */
-    loadState();
-    // garantir seleção inicial
-    if(!daySelect.value) daySelect.value="1";
+     // ========== INICIALIZAÇÃO & RENDERIZAÇÃO GERAL ==========
 
-    // sincronizar chips com estado salvo
-    (function syncChips(){
-      const day=getSelectedDay();
-      const e=getDayEnergy(day);
-      const c=getDayContext(day);
-      energyChips.querySelectorAll(".chip").forEach(ch=>ch.classList.toggle("active",ch.getAttribute("data-energy")===e));
-      contextChips.querySelectorAll(".chip").forEach(ch=>ch.classList.toggle("active",ch.getAttribute("data-context")===c));
-    })();
+// Função única de renderização geral
+function renderAll() {
+  if (typeof renderFood === "function") renderFood();
+  if (typeof renderExercises === "function") renderExercises();
+  if (typeof renderCasa === "function") renderCasa();
+  if (typeof renderCasaStats === "function") renderCasaStats();
 
-   function renderAll() {
-  renderFood();
-  renderExercises();
-  renderCasa();
-  renderCycleHistory();
+  // Histórico de ciclos: usa o novo bloco, se existir; senão, o antigo
+  if (typeof renderCycleHistoryBlock === "function") {
+    renderCycleHistoryBlock();
+  } else if (typeof renderCycleHistory === "function") {
+    renderCycleHistory();
+  }
 }
-    renderAll();
-    function downloadCycleHistory() {
+
+// Inicialização geral
+function init() {
+  // Carrega estado salvo
+  loadState();
+
+  // Aplicar o dia salvo no estado
+  if (daySelect) {
+    const sd = state.selectedDay;
+    if (typeof sd === "number" && sd >= 1 && sd <= 14) {
+      daySelect.value = String(sd);
+    } else {
+      daySelect.value = "1";
+      state.selectedDay = 1;
+    }
+  }
+
+  // Se tiver função para sincronizar chips com o dia, chama aqui
+  if (typeof syncChipsWithDay === "function") {
+    syncChipsWithDay();
+  }
+
+  // Energia inicial
+  if (energyChips) {
+    const energy = getDayEnergy(getSelectedDay());
+    Array.from(energyChips.querySelectorAll(".chip")).forEach((c) => {
+      c.classList.toggle(
+        "active",
+        c.getAttribute("data-energy") === energy
+      );
+    });
+  }
+
+  // Contexto inicial
+  if (contextChips) {
+    const ctx = getDayContext(getSelectedDay());
+    Array.from(contextChips.querySelectorAll(".chip")).forEach((c) => {
+      c.classList.toggle(
+        "active",
+        c.getAttribute("data-context") === ctx
+      );
+    });
+  }
+
+  // Primeira renderização de tudo
+  renderAll();
+}
+
+// Chamada única de inicialização
+init();
+
+// ====== DOWNLOAD DO HISTÓRICO DE CICLOS ======
+function downloadCycleHistory() {
   const history = state.cycleHistory || [];
   if (!history.length) {
-    alert("Ainda não há ciclos arquivados. Use o botão “Reiniciar ciclo” para registrar o primeiro ciclo.");
+    alert(
+      "Ainda não há ciclos arquivados. Use o botão “Reiniciar ciclo” para registrar o primeiro ciclo."
+    );
     return;
   }
 
   const lines = [];
   const now = new Date();
   lines.push("Histórico de ciclos – Rotina 14 Dias (Fibro)");
-  lines.push(`Gerado em: ${now.toLocaleDateString("pt-BR")} ${now.toLocaleTimeString("pt-BR")}`);
+  lines.push(
+    `Gerado em: ${now.toLocaleDateString("pt-BR")} ${now.toLocaleTimeString("pt-BR")}`
+  );
   lines.push("");
 
   history.forEach((snap, idx) => {
@@ -3785,10 +4045,14 @@ function getDomesticTaskIdsForDay(day) {
     const exStats = computeCycleExerciseStats(snap.exDone || {});
 
     lines.push(`Ciclo ${cicloIdx} – arquivado em ${dataLabel}`);
-    lines.push(`  Alimentação: ${foodStats.percDentro}% de refeições dentro do combinado`);
+    lines.push(
+      `  Alimentação: ${foodStats.percDentro}% de refeições dentro do combinado`
+    );
     lines.push(`  Refeições puladas: ${foodStats.percPulado}%`);
     lines.push(`  Refeições fora do combinado: ${foodStats.percNao}%`);
-    lines.push(`  Movimento: ${exStats.diasComMov}/${exStats.totalDias} dias com exercício (${exStats.percDiasMov}%)`);
+    lines.push(
+      `  Movimento: ${exStats.diasComMov}/${exStats.totalDias} dias com exercício (${exStats.percDiasMov}%)`
+    );
     lines.push("");
   });
 
@@ -3803,20 +4067,24 @@ function getDomesticTaskIdsForDay(day) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
 if (btnDownloadCycleHistory) {
   btnDownloadCycleHistory.addEventListener("click", downloadCycleHistory);
 }
 
-   if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("sw.js")
-          .catch((err) => {
-            console.warn("Falha ao registrar service worker:", err);
-          });
+// ========== SERVICE WORKER ==========
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("sw.js")
+      .catch((err) => {
+        console.warn("Falha ao registrar service worker:", err);
       });
-    }
-  </script>
+  });
+}
+</script>
+
 </body>
 </html>
+
 
