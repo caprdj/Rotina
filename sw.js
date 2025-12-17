@@ -1,43 +1,48 @@
-// Nome do cache (mude a versão quando fizer alterações grandes)
-const CACHE_NAME = "rotina-fibro-v1";
+// sw.js – service worker único para Rotina + Cardápio + Inventário
 
-// Arquivos principais para cache
-const URLS_TO_CACHE = [
-  "./",
-  "./index.html",
-  "./manifest.json"
-  // Se tiver CSS/JS externos ou ícones, adicione aqui também.
+const CACHE_NAME = "fibro-suite-v1";
+
+const OFFLINE_URLS = [
+  "index.html",
+  "rotina.html",
+  "cardapio.html",
+  "inventario.html",
+  "manifest.json"
+  // Se tiver ícones tipo icon-192.png, icon-512.png etc,
+  // acrescente aqui: "icon-192.png", "icon-512.png", ...
 ];
 
-// Instalação: pré-cache dos arquivos principais
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(URLS_TO_CACHE);
+      return cache.addAll(OFFLINE_URLS);
     })
   );
 });
 
-// Ativação: limpa caches antigos
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
       )
     )
   );
 });
 
-// Fetch: tenta rede, se falhar usa cache
 self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  if (req.method !== "GET") return;
+
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+      return fetch(req).catch(() => {
+        // Se quiser, aqui dá pra fazer fallback para uma página offline
+        return cached || Promise.reject("Offline e sem cache");
+      });
     })
   );
 });

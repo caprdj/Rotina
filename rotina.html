@@ -1,0 +1,3495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rotina 14 Dias — Fibro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4b7bec" />
+
+  <style>
+    :root {
+      --bg: #f5f5fa;
+      --card-bg: #ffffff;
+      --primary: #4b7bec;
+      --secondary: #20bf6b;
+      --accent: #f7b731;
+      --text: #222;
+      --muted: #666;
+      --border: #ddd;
+      --danger: #eb3b5a;
+      --pill-bg: #eef2ff;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem 0.75rem 3rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h1 { font-size: 1.0rem; margin-bottom: 0.1rem; }
+    .subtitle { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 0.9rem 0.9rem 1rem;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+      margin-bottom: 0.85rem;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+      gap: 0.5rem;
+    }
+
+    .card-header h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: #f9fafb;
+      white-space: nowrap;
+    }
+
+    .badge.primary {
+      border-color: rgba(59, 130, 246, 0.6);
+      background: rgba(59, 130, 246, 0.07);
+      color: #1d4ed8;
+    }
+
+    .badge.orange {
+      border-color: rgba(249, 115, 22, 0.6);
+      background: rgba(249, 115, 22, 0.07);
+      color: #c2410c;
+    }
+
+    .badge.gray {
+      border-color: rgba(148, 163, 184, 0.6);
+      background: rgba(148, 163, 184, 0.07);
+      color: #4b5563;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.6rem;
+      align-items: center;
+    }
+
+    select, button, input, textarea { font-family: inherit; }
+
+    select {
+      padding: 0.3rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #FFF;
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+    }
+
+    .btn-outline { background: transparent; }
+
+    .btn-small {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .btn-icon {
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      padding: 0.1rem 0.2rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .btn-icon:hover { color: var(--text); }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin: 0.4rem 0 0.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .section-title span.icon { font-size: 0.9rem; }
+
+    .tasks-list,
+    .exercise-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.22rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .task-item,
+    .exercise-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.35rem;
+      padding: 0.2rem 0.15rem;
+      border-radius: 10px;
+    }
+
+    .task-main {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.1rem;
+      flex: 1;
+    }
+
+    .task-label-main { font-size: 0.9rem; }
+
+    .task-details {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.18rem;
+      display: none;
+    }
+
+    input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--primary);
+      margin-top: 0.1rem;
+    }
+
+    .empty-message {
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding: 0.6rem 0.3rem;
+      line-height: 1.4;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      margin-top: 0.2rem;
+    }
+
+    .stats-chip {
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .bar-group { margin-top: 0.4rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .bar-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.05rem; }
+    .bar {
+      width: 100%; height: 6px; border-radius: 999px;
+      background: #e5e7eb; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg,#60a5fa,#22c55e);
+      transition: width 0.2s ease-out;
+    }
+
+    .mini-text {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      line-height: 1.4;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .flex { display: flex; align-items: center; }
+
+    .mt-4 { margin-top: 0.8rem; }
+
+    @media (min-width: 720px) {
+      .grid-2 { display: grid; gap: 0.9rem; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); }
+    }
+
+    /* CABEÇALHO PÍLULA */
+    .header-main-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+    }
+   .header-main-top-right {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* separa o botão e o selo */
+  gap: 0.3rem;
+  width: 100%;                    /* ocupa a largura do card */
+}
+
+    .pill-group {
+      display: inline-flex;
+      width: auto;
+      padding: 0.35rem 0.5rem;
+      border-radius: 999px;
+      background: var(--pill-bg);
+      justify-content: center;
+      align-items: center;
+      gap: 0.3rem;
+      margin: 0 auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .tabs-header { display: flex; justify-content: center; }
+
+    .tab-button {
+      flex: 1;
+      min-width: 0;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.55rem;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.25rem;
+      color: #4b5563;
+    }
+    .tab-button.active {
+      background: #F0F8FF;
+      color: #2563eb;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    .chip-group { display: inline-flex; gap: 0.2rem; }
+    .chip {
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      padding: 0.32rem 0.7rem;
+      font-size: 0.83rem;
+      cursor: pointer;
+      color: #4b5563;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      min-width: 0;
+    }
+    .chip.active {
+      background: #F0F8FF;
+      color: #2563eb;
+      font-weight: 600;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+    .chip.danger.active { color: #b91c1c; }
+
+    .header-controls {
+      margin-top: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .cycle-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.85rem;
+      justify-content: center;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ALIMENTAÇÃO */
+    .meal-card {
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 0.6rem 0.6rem 0.5rem;
+      margin-bottom: 0.5rem;
+      background: #f9fafb;
+    }
+
+    .meal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .meal-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .meal-header-actions {
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .meal-toggle-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      padding: 0.18rem 0.5rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .meal-toggle-btn.skip-active {
+      background: rgba(148,163,184,0.16);
+      color: #4b5563;
+    }
+    .meal-toggle-btn.off-active {
+      background: rgba(248,113,113,0.12);
+      border-color: rgba(248,113,113,0.7);
+      color: #b91c1c;
+    }
+
+    .meal-options-list {
+      margin-top: 0.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .meal-option-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.35rem;
+      padding: 0.18rem 0;
+    }
+
+    .meal-option-main {
+      flex: 1;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .meal-option-buttons {
+      display: flex;
+      gap: 0.15rem;
+      align-items: center;
+    }
+
+    .meal-adjust-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      padding: 0.15rem 0.45rem;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .meal-note-block { margin-left: 1.6rem; margin-top: 0.15rem; }
+
+    .meal-note {
+      width: 100%;
+      font-size: 0.78rem;
+      font-family: inherit;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      padding: 0.3rem;
+      resize: vertical;
+      min-height: 36px;
+    }
+
+    .meal-recipe {
+      margin-left: 1.6rem;
+      margin-top: 0.15rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 0.25rem 0.3rem;
+      border-left: 2px solid #d1d5db;
+      display: none;
+    }
+
+    .meal-add-area {
+      margin-top: 0.6rem;
+      border-top: 1px dashed #e5e7eb;
+      padding-top: 0.35rem;
+    }
+
+    .meal-add-area label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    .meal-add-area input,
+    .meal-add-area textarea,
+    .meal-add-area select {
+      width: 100%;
+      font-size: 0.78rem;
+      font-family: inherit;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      padding: 0.3rem;
+      margin-bottom: 0.25rem;
+    }
+
+    /* EXERCÍCIOS */
+    .exercise-block {
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 0.6rem;
+      margin-bottom: 0.5rem;
+      background: #f9fafb;
+    }
+
+    .exercise-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .exercise-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .exercise-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-left: 1.1rem;
+      display: none;
+    }
+
+    /* MODAIS */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 500;
+      padding: 1rem;
+    }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1rem;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      animation: modalIn .18s ease-out;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-card h3 {
+      margin-bottom: 0.6rem;
+      font-size: 1.05rem;
+    }
+
+    .modal-card label {
+      font-size: 0.78rem;
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    .modal-card input,
+    .modal-card textarea,
+    .modal-card select {
+      width: 100%;
+      padding: 0.35rem;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      margin-top: 0.15rem;
+      font-size: 0.85rem;
+    }
+
+    .modal-card textarea {
+      height: 70px;
+      resize: vertical;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      margin-top: 0.8rem;
+    }
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-home .icon {
+  font-size: 1rem;
+}
+
+.btn-home:active {
+  background: var(--pill-bg);
+}
+
+  </style>
+</head>
+
+
+<body>
+  <!-- CABEÇALHO -->
+  <header class="card">
+        <div class="header-main-top-right">
+      <button
+        type="button"
+        class="btn-home"
+        onclick="window.location.href='index.html'"
+      >
+        <span class="icon">🏠</span>
+      </button>
+      <span class="badge primary">🪻</span>
+    </div>
+
+
+    <!-- Abas -->
+    <!-- Abas -->
+<div class="tabs-header pill-group">
+  <button type="button" class="tab-button active" data-tab="tabExercicio">
+    🏃‍♀️ <span>Exercícios</span>
+  </button>
+  <button type="button" class="tab-button" data-tab="tabCasa">
+    🏡 <span>Casa</span>
+  </button>
+</div>
+
+    <!-- Dia, energia e contexto -->
+    <div class="header-controls">
+      <div class="cycle-row">
+        <span>Dia do ciclo:</span>
+        <select id="daySelect"></select>
+      </div>
+
+      <div class="pill-group chip-group" id="energyChips">
+        <button type="button" class="chip active" data-energy="alta">🔋 Alta</button>
+        <button type="button" class="chip" data-energy="baixa">💧 Baixa</button>
+      </div>
+
+      <div class="pill-group chip-group" id="contextChips">
+        <button type="button" class="chip active" data-context="casa">🏡 Casa</button>
+        <button type="button" class="chip" data-context="viagem">🧳 Viagem</button>
+        <button type="button" class="chip" data-context="find">🏖️ Find</button>
+        <button type="button" class="chip danger" data-context="pausa">⏸ Pausa</button>
+      </div>
+    </div>
+  </header>
+
+
+
+  <!-- EXERCÍCIOS -->
+  <section id="tabExercicio" class="tab-panel active">
+    <section class="card">
+      <div class="card-header flex-between">
+        <h2>
+          🧘‍♀️ Exercícios do Dia
+          <span class="badge gray" id="badgeExDia"></span>
+        </h2>
+        <span class="mini-text" id="exContextLabel"></span>
+      </div>
+      <div id="exerciseContent"></div>
+
+      <div class="card-header flex-between mt-4">
+        <h2>📊 Resumo (ciclo 14 dias)</h2>
+        <span class="badge orange" id="badgeExResumo"></span>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn btn-outline" id="btnDownloadExResumo">
+          ⬇️ Baixar resumo (14 dias)
+        </button>
+      </div>
+      <div id="exerciseStats"></div>
+    </section>
+  </section>
+
+  <!-- CASA -->
+  <section id="tabCasa" class="tab-panel">
+    <section class="card">
+      <div class="card-header flex-between">
+        <h2>
+          🏡 Casa — Tarefas do Dia
+          <span class="badge gray" id="badgeCasaDia"></span>
+        </h2>
+        <span class="mini-text" id="casaContextLabel"></span>
+      </div>
+      <div id="domesticContent"></div>
+      <div class="mini-text">
+        [ ] → marcar como feito • + → instruções • ⊘ → não faz sentido hoje • ↺ → reagendar
+      </div>
+    </section>
+
+    <section class="card" id="cardFlex">
+      <div class="card-header flex-between">
+        <h2>
+          🗂 Tarefas reagendadas
+          <span class="badge gray" id="badgeFlexCount">0 tarefa(s)</span>
+        </h2>
+        <button class="btn-small btn-outline" id="btnClearFlex">Limpar lista</button>
+      </div>
+      <div id="flexContent"></div>
+    </section>
+
+<section class="card" id="cardCasaResumo">
+  <div class="card-header flex-between">
+    <h2>📊 Resumo (Casa — ciclo 14 dias)</h2>
+    <span class="badge orange" id="badgeCasaResumo">Base: ciclo 14 dias</span>
+  </div>
+
+  <div class="toolbar" style="justify-content:flex-end;">
+    <!-- Se quiser botão depois, ele entra aqui (igual Exercícios). Por enquanto fica vazio. -->
+  </div>
+
+  <div id="casaStatsContent"></div>
+</section>
+
+
+    <!-- Histórico de ciclos -->
+    <section class="card" id="cardCycleHistory">
+      <div class="card-header flex-between">
+        <h2>📚 Histórico de ciclos</h2>
+        <div class="flex" style="gap: .4rem;">
+          <button type="button" class="btn-small btn-outline" id="btnRestartCycle">
+            🌀 Reiniciar ciclo
+          </button>
+          <button type="button" class="btn-small" id="btnDownloadCycleHistory">
+            ⬇️ Baixar histórico
+          </button>
+<button id="btnDownloadHistory" class="btn-small btn-outline">📤 Backup</button>
+        <button id="btnRestoreHistory" class="btn-small btn-outline">📥 Restaurar</button>
+        <input id="restoreFileInput" type="file" accept="application/json" style="display:none" />
+
+        </div>
+      </div>
+      <div id="cycleHistoryContent"></div>
+    </section>
+  </section>
+
+
+  <!-- ===== MODAL DE EDIÇÃO DE TAREFA ===== -->
+  <div id="editTaskModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <h3>Editar tarefa</h3>
+
+      <label for="editTaskName">Nome da tarefa:</label>
+      <input type="text" id="editTaskName" />
+
+      <label for="editTaskInstr">Instruções (opcional):</label>
+      <textarea id="editTaskInstr"></textarea>
+
+      <label for="editTaskTipo">Categoria:</label>
+      <select id="editTaskTipo">
+        <option value="indispensavel">Indispensável</option>
+        <option value="desejavel">Desejável</option>
+      </select>
+
+      <div class="modal-buttons">
+        <button id="editTaskSaveBtn" class="btn-small">Salvar</button>
+        <button id="editTaskCancelBtn" class="btn-small btn-outline">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- ===== MODAL DE EDIÇÃO DE EXERCÍCIO ===== -->
+  <div id="editExerciseModal" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+      <h3>Editar exercício</h3>
+
+      <label for="editExName">Nome do exercício:</label>
+      <input type="text" id="editExName" />
+
+      <label for="editExInstr">Instruções (opcional):</label>
+      <textarea id="editExInstr"></textarea>
+
+      <label for="editExEquip">Equipamento:</label>
+      <input type="text" id="editExEquip" placeholder="Esteira, bola, sem equipamento..." />
+
+      <label for="editExEnergia">Nível de energia:</label>
+      <select id="editExEnergia">
+        <option value="alta">Energia alta (versão completa)</option>
+        <option value="baixa">Energia baixa (versão leve)</option>
+      </select>
+
+      <label for="editExContexto">Local:</label>
+      <select id="editExContexto">
+        <option value="casa">Casa</option>
+        <option value="find">Find</option>
+        <option value="viagem">Viagem</option>
+        <option value="pausa">Pausa</option>
+      </select>
+
+      <label for="editExCategoria">Categoria:</label>
+      <select id="editExCategoria">
+        <option value="forca">Força</option>
+        <option value="mobilidade">Mobilidade</option>
+        <option value="cardio">Cardio</option>
+        <option value="respiracao">Respiração</option>
+        <option value="alongamento">Alongamento</option>
+        <option value="equilibrio">Equilíbrio</option>
+        <option value="recuperacao">Recuperação</option>
+        <option value="estabilidade">Estabilidade</option>
+        <option value="outros">Outros</option>
+      </select>
+
+      <div class="modal-buttons">
+        <button id="editExSaveBtn" class="btn-small">Salvar</button>
+        <button id="editExCancelBtn" class="btn-small btn-outline">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    /* =========================
+       TABS
+    ========================= */
+    
+    const EX_MODALITIES = [
+  { id: "mobilidade", label: "Mobilidade" },
+  { id: "alongamento", label: "Alongamento" },
+  { id: "forca", label: "Força" },
+  { id: "cardio", label: "Cardio/Esteira" },
+  { id: "respiracao", label: "Respiração" },
+  { id: "relax", label: "Relaxamento" },
+];
+    
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabPanels  = document.querySelectorAll(".tab-panel");
+
+
+
+   tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const targetId = btn.getAttribute("data-tab");
+    tabButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    tabPanels.forEach(p => p.classList.toggle("active", p.id === targetId));
+
+    if (targetId === "tabCasa") {
+  renderCasaStats();
+}
+
+    // Garante re-render ao trocar de aba (especialmente stats)
+    try { renderAll(); } catch (e) {}
+  });
+});
+
+    /* =========================
+       ELEMENTOS GLOBAIS
+    ========================= */
+    const daySelect     = document.getElementById("daySelect");
+    const energyChips   = document.getElementById("energyChips");
+    const contextChips  = document.getElementById("contextChips");
+
+   
+
+    // Exercícios
+    const exerciseContent    = document.getElementById("exerciseContent");
+    const exerciseStats      = document.getElementById("exerciseStats");
+    const badgeExDia         = document.getElementById("badgeExDia");
+    const badgeExResumo      = document.getElementById("badgeExResumo");
+    const exContextLabel     = document.getElementById("exContextLabel");
+    const btnDownloadExResumo= document.getElementById("btnDownloadExResumo");
+
+const btnDownloadHistory = document.getElementById("btnDownloadHistory");
+const btnRestoreHistory = document.getElementById("btnRestoreHistory");
+const restoreFileInput = document.getElementById("restoreFileInput");
+if (btnDownloadHistory) {
+  btnDownloadHistory.addEventListener("click", downloadHistory);
+}
+
+    // Casa
+    const domesticContent    = document.getElementById("domesticContent");
+    const flexContent        = document.getElementById("flexContent");
+
+    const badgeCasaDia       = document.getElementById("badgeCasaDia");
+    const badgeFlexCount     = document.getElementById("badgeFlexCount");
+    
+    
+    const btnClearFlex       = document.getElementById("btnClearFlex");
+    const casaContextLabel   = document.getElementById("casaContextLabel");
+    const casaStatsContent = document.getElementById("casaStatsContent");
+    
+
+    // Ciclo / histórico
+    const btnRestartCycle          = document.getElementById("btnRestartCycle");
+    const cycleHistoryContent      = document.getElementById("cycleHistoryContent");
+    const btnDownloadCycleHistory  = document.getElementById("btnDownloadCycleHistory");
+
+    /* =========================
+       MODAIS (refs)
+    ========================= */
+    // Tarefas
+    let editTaskModal      = document.getElementById("editTaskModal");
+    let editTaskName       = document.getElementById("editTaskName");
+    let editTaskInstr      = document.getElementById("editTaskInstr");
+    let editTaskTipo       = document.getElementById("editTaskTipo");
+    let editTaskSaveBtn    = document.getElementById("editTaskSaveBtn");
+    let editTaskCancelBtn  = document.getElementById("editTaskCancelBtn");
+    let currentEditTask    = null; // { day, taskId, source }
+
+   
+
+    // Exercícios
+    let editExerciseModal  = document.getElementById("editExerciseModal");
+    let editExName         = document.getElementById("editExName");
+    let editExInstr        = document.getElementById("editExInstr");
+    let editExEquip        = document.getElementById("editExEquip");
+    let editExEnergia      = document.getElementById("editExEnergia");
+    let editExContexto     = document.getElementById("editExContexto");
+    let editExCategoria    = document.getElementById("editExCategoria");
+    let editExSaveBtn      = document.getElementById("editExSaveBtn");
+    let editExCancelBtn    = document.getElementById("editExCancelBtn");
+    let currentExEdit      = null; // { day, exId }
+
+    /*# =========================
+       ESTADO
+    ========================= */
+    const STORAGE_KEY = "app_fibro_estado_v5";
+
+    let state = {
+      selectedDay: 1,
+      dayMeta: {},         // context por dia
+      energyMeta: {},      // energia por dia
+
+      
+      exState: {},         // done por exercício
+      exOptionsState: null,
+
+      domesticDone: {},
+      domesticIgnored: {},
+      domesticReagendado: {},
+      domesticCustom: {},  // tarefas criadas pela usuária por dia
+      domesticDeleted: {},
+
+      flexList: [],
+      flexHistory: [],
+
+      cycleHistory: []
+    };
+
+    function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+    function normalizeContext(val){
+      if(!val) return "casa";
+      const v = String(val).toLowerCase();
+      if(v === "find" || v === "pais") return "find";
+      if(v === "casa" || v === "home") return "casa";
+      if(v === "viagem" || v === "travel") return "viagem";
+      if(v === "pausa" || v === "pause") return "pausa";
+      return "casa";
+    }
+
+    function normalizeEnergy(val){
+      const v = String(val || "").toLowerCase();
+      return (v === "baixa") ? "baixa" : "alta";
+    }
+
+    function normalizeStateAfterLoad(){
+      // selectedDay
+      if (typeof state.selectedDay !== "number" || state.selectedDay < 1 || state.selectedDay > 14) {
+        state.selectedDay = 1;
+      }
+
+      // context/energy por dia
+      const newDayMeta = {};
+      for(let d=1; d<=14; d++){
+        const key1 = String(d);
+        const raw = state.dayMeta?.[d] ?? state.dayMeta?.[key1] ?? "casa";
+        newDayMeta[d] = normalizeContext(raw);
+      }
+      state.dayMeta = newDayMeta;
+
+      const newEnergyMeta = {};
+      for(let d=1; d<=14; d++){
+        const key1 = String(d);
+        const raw = state.energyMeta?.[d] ?? state.energyMeta?.[key1] ?? "alta";
+        newEnergyMeta[d] = normalizeEnergy(raw);
+      }
+      state.energyMeta = newEnergyMeta;
+
+      // garantias arrays/objetos
+      state.cycleHistory    = state.cycleHistory    || [];
+      state.domesticDeleted = state.domesticDeleted || {};
+      state.domesticCustom  = state.domesticCustom  || {};
+      state.exState         = state.exState         || {};
+      
+      state.flexList        = state.flexList        || [];
+      state.flexHistory     = state.flexHistory     || [];
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw) || {};
+        state = Object.assign(state, parsed);
+        normalizeStateAfterLoad();
+      } catch (e) {
+        console.warn("Erro ao carregar estado:", e);
+      }
+    }
+
+    function persistState(){
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }catch(e){ console.warn("Erro ao salvar estado:", e); }
+    }
+
+    /* =========================
+       DIA / ENERGIA / CONTEXTO
+    ========================= */
+    function getWeekdayLabel(day){
+      // Seu ciclo começa numa 5ª feira
+      const labels = ["5ª","6ª","S","D","2ª","3ª","4ª"];
+      return labels[(day-1)%7];
+    }
+
+    function getSelectedDay(){
+      return parseInt(daySelect.value, 10) || 1;
+    }
+
+    function getDayEnergy(day){
+      return normalizeEnergy(state.energyMeta[day] || "alta");
+    }
+    function setDayEnergy(day,val){
+      state.energyMeta[day] = normalizeEnergy(val);
+      persistState();
+    }
+
+    function getDayContext(day){
+      return normalizeContext(state.dayMeta[day] || "casa");
+    }
+    function setDayContext(day,val){
+      state.dayMeta[day] = normalizeContext(val);
+      persistState();
+    }
+
+    function syncHeaderChips(){
+      const day = getSelectedDay();
+      const energy = getDayEnergy(day);
+      const ctx = getDayContext(day);
+
+      if(energyChips){
+        energyChips.querySelectorAll(".chip").forEach(c=>{
+          c.classList.toggle("active", c.getAttribute("data-energy") === energy);
+        });
+      }
+      if(contextChips){
+        contextChips.querySelectorAll(".chip").forEach(c=>{
+          c.classList.toggle("active", normalizeContext(c.getAttribute("data-context")) === ctx);
+        });
+      }
+    }
+
+    function buildDaySelect(){
+      daySelect.innerHTML = "";
+      for(let i=1;i<=14;i++){
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `Dia ${i} (${getWeekdayLabel(i)})`;
+        daySelect.appendChild(opt);
+      }
+      daySelect.value = String(state.selectedDay || 1);
+    }
+
+    daySelect.addEventListener("change", () => {
+      state.selectedDay = getSelectedDay();
+      persistState();
+      syncHeaderChips();
+      renderAll();
+    });
+
+    energyChips.addEventListener("click", e => {
+      const btn = e.target.closest(".chip"); if(!btn) return;
+      const energy = btn.getAttribute("data-energy");
+      const day = getSelectedDay();
+      setDayEnergy(day, energy);
+      syncHeaderChips();
+      renderAll();
+    });
+
+    contextChips.addEventListener("click", e => {
+      const btn = e.target.closest(".chip"); if(!btn) return;
+      const ctx = btn.getAttribute("data-context");
+      const day = getSelectedDay();
+      setDayContext(day, ctx);
+      syncHeaderChips();
+      renderAll();
+    });
+
+    
+    /* =========================
+       =========================
+       EXERCÍCIOS
+       =========================
+    ========================= */
+
+    // Base enxuta (você pode colar os seus dias completos aqui depois)
+    const baseExOptions = {
+      1: [
+        // Casa / alta
+        {id:"d1_1",nome:"Esteira 10–15 min",instrucao:"Inicie em velocidade confortável (sem esforço respiratório). Mantenha postura ereta, ombros baixos. Ritmo recomendado: esforço 3–4/10 • Se sentir peso nas pernas, reduza ou finalize antes. • Versão leve: 5 minutos de caminhada MUITO leve (ou apenas alongar se estiver sem energia)",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        
+        {id:"d1_3",nome:"Ponte",instrucao:"Deite-se de barriga para cima, joelhos dobrados e pés paralelos. Ative o abdômen levemente. Ao expirar, eleve o quadril articulando a coluna vértebra por vértebra. Segure 1–2 s no topo. Inspire descendo devagar. • 6–10 repetições. • Variação (boa energia): ponte com elevação de calcanhares ou elevação alternada de pernas. • Benefícios: ativa glúteos + core e reduz rigidez lombar.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"mobilidade"},
+        
+        {id:"d1_4",nome:"Agachamento com bola na parede.",instrucao:"Fique de costas para a parede com a bola entre a lombar e a parede. Pés afastados à frente do corpo. Ao expirar, desça deslizando pela bola até um ângulo confortável (45°–60°). Suba inspirando. • 6–10 repetições • Benefícios: fortalece quadríceps sem impacto",equipamento:"Bola",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d1_5",nome:"Subida no step.",instrucao:"Pé direito no step → suba pressionando o calcanhar → traga o outro pé → desça devagar. • 8 repetições cada lado. • Use apoio lateral se precisar. • Benefícios: força funcional e equilíbrio.",equipamento:"Step",energia:"alta",contexto:"casa",categoria:"forca"},
+       
+        // Casa / baixa
+        {id:"d1_6",nome:"Esteira Leve",instrucao:"Versão leve: 5 minutos de caminhada MUITO leve (ou apenas alongar se estiver sem energia)",equipamento:"Esteira",energia:"baixa",contexto:"casa",categoria:"cardio"},
+        {id:"d1_7",nome:"Aquecimento e Respiração",instrucao:"Sente-se ou deite-se confortavelmente. Inspire pelo nariz expandindo costelas e abdômen; expire pela boca esvaziando o abdômen. • Ombros: círculos lentos para frente e para trás • Pescoço: movimentos suaves de cima/baixo e direita/esquerda, sem forçar • Tornozelos: círculos para ativar circulação • Benefício: reduz rigidez e prepara a musculatura",equipamento:"Sem equipamento",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+        {id:"d1_8",nome:"Ponte Simples",instrucao:"Deite-se de barriga para cima, joelhos dobrados e pés paralelos. Ative o abdômen levemente. Ao expirar, eleve o quadril articulando a coluna vértebra por vértebra. Segure 1–2 s no topo. Inspire descendo devagar. • 6–10 repetições. • Benefícios: ativa glúteos + core e reduz rigidez lombar.",equipamento:"Tapete",energia:"baixa",contexto:"casa",categoria:"mobilidade"},
+       
+        // Casa dos pais
+        {id:"d1_pais_1",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d1_pais_2",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d1_pais_3",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d1_viagem_1",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d1_viagem_2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+         {id:"d1_viagem_3",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d1_viagem_along_4",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        
+        
+     
+      ],
+      2: [
+        // Casa / alta
+        {id:"d2_1",nome:"alongamento da coluna",instrucao:"Sente-se com pernas estendidas (ou flexionadas). Inspire crescendo a coluna; expire desenrolando vértebra por vértebra. • 3–5 repetições. • Benefícios: solta cadeia posterior e reduz rigidez matinal",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d2_2",nome:"alongamento lateral - Sereia",instrucao:"Sente-se com pernas dobradas para um lado. Incline o tronco lateralmente. Eleve o braço oposto. Respire 15–20 s. • Benefícios: alivia laterais do tronco e lombar.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d2_3",nome:"Gato–Vaca ",instrucao:"Em quatro apoios: inspire arqueando a lombar (Vaca); expire arredondando a coluna (Gato). • 8–10 ciclos. • Benefícios: mobiliza coluna e alivia tensão.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+        {id:"d2_4",nome:"alongamento posterior com faixa",instrucao:"Deite-se e passe a faixa no pé. Eleve a perna até sentir alongar. • 20–30 s cada lado. • Benefícios: reduz tensão lombar e posterior.",equipamento:"Faixa",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d2_5",nome:"Relaxamento com bola",instrucao:"Opção 1: pernas apoiadas na bola. Opção 2: costas apoiadas na bola. • Respire profundamente por 1–2 min. • Libera tensão e abre o peito.",equipamento:"Bola",energia:"alta",contexto:"casa",categoria:"Recuperação"},
+        {id:"d2_6",nome:"alongamento posterior com faixa",instrucao:"Deite-se e passe a faixa no pé. Eleve a perna até sentir alongar. • 20–30 s cada lado. • Benefícios: reduz tensão lombar e posterior.",equipamento:"2 alongamentos à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        
+        // Casa / baixa
+        {id:"d2_7",nome:"Respiração",instrucao:"Foque em 2 minutos de respiração tranquila.",equipamento:"sem equipamento",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+        
+        {id:"d2_8",nome:"alongamento da coluna",instrucao:"Sente-se com pernas estendidas (ou flexionadas). Inspire crescendo a coluna; expire desenrolando vértebra por vértebra. • 3–5 repetições. • Benefícios: solta cadeia posterior e reduz rigidez matinal",equipamento:"2 alongamentos à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d2_9",nome:"alongamento lateral - Sereia",instrucao:"Sente-se com pernas dobradas para um lado. Incline o tronco lateralmente. Eleve o braço oposto. Respire 15–20 s. • Benefícios: alivia laterais do tronco e lombar.",equipamento:"2 alongamentos à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d2_10",nome:"alongamento posterior com faixa",instrucao:"Deite-se e passe a faixa no pé. Eleve a perna até sentir alongar. • 20–30 s cada lado. • Benefícios: reduz tensão lombar e posterior.",equipamento:"2 alongamentos à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+      // Casa dos pais
+        {id:"d2_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d2_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d2_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d2_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d2_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+         {id:"d2_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d2_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        
+        
+      ],
+      3: [
+        // Casa / alta
+        {id:"d3_1",nome:"Esteira 5–10 min",instrucao:"Caminhada leve, coluna ereta. Esforço 2–3/10. • Versão leve: 3–5 min ou eliminar.",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        {id:"d3_2",nome:"Remada",instrucao:"Sente-se no chão com as pernas estendidas (ou flexionadas se ficar mais confortável). Passe a faixa elástica pela sola dos pés e segure as pontas com as mãos • Alternativa: prenda a faixa em algo fixo à altura do peito e fique sentada ou em pé. Coluna ereta, ombros longe das orelhas. Inspire preparando. Ao expirar, puxe os cotovelos para trás, rente ao corpo, como se quisesse juntar as escápulas. Mantenha punhos neutros e braços paralelos ao chão. Inspire retornando lentamente à posição inicial • Repita 8–12 vezes em ritmo controlado • Erros comuns a evitar: Encolher os ombros. Arredondar as costas. Puxar com força excessiva • Benefícios: fortalece parte superior das costas, melhora postura e estabilidade escapular.",equipamento:"Faixa",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d3_3",nome:"Bíceps com 1–2 kg",instrucao:"Sente-se ou fique em pé com coluna ereta.Segure um halter em cada mão, braços ao lado do corpo, palmas voltadas para frente. Inspire. Ao expirar, flexione os cotovelos, trazendo os pesos em direção aos ombros sem mover a parte superior dos braços. Inspire descendo lentamente, mantendo controle • Repita 8–10 vezes • Dicas: Cotovelos sempre colados ao tronco. Punhos neutros (não dobre para trás). Movimentos lentos, sem balanço do corpo • Benefícios: ativa bíceps sem sobrecarregar ombros, ajuda em atividades diárias como carregar objetos leves.",equipamento:"Halteres",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d3_4",nome:"Compressão de aro",instrucao:"Sente-se em postura ereta. Segure o aro entre as mãos, braços estendidos à frente na altura do peito. Cotovelos levemente flexionados. Inspire. Ao expirar, pressione o aro, ativando o peitoral e músculos dos ombros. Mantenha a pressão por 1–2 segundos. Inspire relaxando lentamente • Repita 8–12 vezes • Erros comuns: Elevar os ombros. Pressionar com força excessiva (evite tremer). Empurrar o pescoço para frente • Benefícios: fortalece peito, estabiliza ombros e melhora consciência postural.",equipamento:"Aro",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d3_5",nome:"Equilíbrio no disco",instrucao:"Coloque o disco no chão próximo a uma parede, mesa ou cadeira firme. Suba no disco com um pé de cada vez, mantendo joelhos levemente flexionados. Segure no apoio até sentir segurança. Quando estiver estável, solte o apoio somente se se sentir confiante. Mantendo abdômen levemente ativado, tente permanecer estável por 20–30 segundos. Desça devagar segurando no apoio • Variação mais leve: Fique apenas com um pé no disco e outro no chão. Ou sente-se sobre o disco para ativar o core de forma mais suave • Benefícios: melhora equilíbrio, propriocepção e estabilidade das articulações.",equipamento:"Disco de Equilíbrio",energia:"alta",contexto:"casa",categoria:"Equilíbrio"},
+        
+        // Casa / baixa
+        {id:"d3_6",nome:"Caminhada leve 3–5 min",instrucao:"Caminhar 3–5 min OU eliminar a esteira se houver dor/tontura/fadiga forte.",equipamento:"Esteira",energia:"baixa",contexto:"casa",categoria:"cardio"},
+        {id:"d3_7",nome:"Remada",instrucao:"Sente-se no chão com as pernas estendidas (ou flexionadas se ficar mais confortável). Passe a faixa elástica pela sola dos pés e segure as pontas com as mãos • Alternativa: prenda a faixa em algo fixo à altura do peito e fique sentada ou em pé. Coluna ereta, ombros longe das orelhas. Inspire preparando. Ao expirar, puxe os cotovelos para trás, rente ao corpo, como se quisesse juntar as escápulas. Mantenha punhos neutros e braços paralelos ao chão. Inspire retornando lentamente à posição inicial • Repita 8–12 vezes em ritmo controlado • Erros comuns a evitar: Encolher os ombros. Arredondar as costas. Puxar com força excessiva • Benefícios: fortalece parte superior das costas, melhora postura e estabilidade escapular.",equipamento:"Faixa",energia:"baixa",contexto:"casa",categoria:"forca"},
+        {id:"d3_8",nome:"Compressão de aro",instrucao:"Sente-se em postura ereta. Segure o aro entre as mãos, braços estendidos à frente na altura do peito. Cotovelos levemente flexionados. Inspire. Ao expirar, pressione o aro, ativando o peitoral e músculos dos ombros. Mantenha a pressão por 1–2 segundos. Inspire relaxando lentamente • Repita 8–12 vezes • Erros comuns: Elevar os ombros. Pressionar com força excessiva (evite tremer). Empurrar o pescoço para frente • Benefícios: fortalece peito, estabiliza ombros e melhora consciência postural.",equipamento:"Aro",energia:"baixa",contexto:"casa",categoria:"forca"},
+       
+        // Casa dos pais
+        {id:"d3_pais_1",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d3_pais_2",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d3_pais_3",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d3_viagem_1",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d3_viagem_2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+         {id:"d3_viagem_3",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d3_viagem_4",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        
+        
+      ],
+      4: [
+        // Casa / alta
+        {id:"d4_1",nome:"1. Alongamento da Coluna",instrucao:"Sente-se com pernas estendidas (ou levemente flexionadas). Inspire crescendo a coluna. Ao expirar, flexione o tronco para frente, desenrolando a coluna. Volte devagar inspirando. • Repita 3–5 vezes. • Objetivo: soltar toda a cadeia posterior e reduzir a rigidez da lombar.",equipamento:"Alongamentos completos (escolha 3 a 5)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_2",nome:"2. Alongamento Lateral – Sereia",instrucao:"Sente-se com pernas dobradas para um lado. Eleve o braço oposto às pernas. Incline o tronco lateralmente até sentir alongar costelas e cintura. • Respire 15–20 segundos. Repita para o outro lado. • Objetivo: aliviar tensão de tronco, oblíquos e região costal.",equipamento:"Alongamentos completos (escolha 3 a 5)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_3",nome:"3. Alongamento do Posterior",instrucao:"Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima e puxe suavemente até sentir alongar • Segure 20–25 s • Repita com a outra perna • Objetivo: soltar posteriores e diminuir tensão lombar.",equipamento:"Alongamentos completos (escolha 3 a 5)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_4",nome:"4. Gato–Vaca",instrucao:"Em quatro apoios, mãos sob ombros. Inspire arqueando lombar (vaca) • Expire arredondando coluna (gato). • Repita 8–10 ciclos lentos. • Objetivo: lubrificar articulações da coluna e aliviar dores de tensão.",equipamento:"Alongamentos completos (escolha 3 a 5)",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+        {id:"d4_5",nome:"5. Alongamento de Peitoral na Parede",instrucao:"Apoie a palma da mão na parede, braço estendido • Gire o tronco suavemente para longe da parede • Segure 15–20 s • Troque o lado.",equipamento:"Alongamentos completos (escolha 3 a 5)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_6",nome:"6. Alongamento de Pescoço",instrucao:"Incline a cabeça para o lado, aproximando a orelha do ombro • Respire 10–15 s • Troque o lado • Depois, leve o queixo ao peito por 10–15 s •  Objetivo: aliviar dor cervical, muito comum em dias de fadiga.",equipamento:"Alongamentos completos (escolha 3 a 5)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+         {id:"d4_7",nome:"1. Pernas apoiadas na bola",instrucao:"Deite-se de barriga para cima • Apoie as panturrilhas sobre a bola • Braços ao lado do corpo, respiração profunda • Benefício: relaxa a lombar e reduz pressão nas pernas.",equipamento:"Relaxamento com bola escolha 1 opção",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+         {id:"d4_8",nome:"2. Costas apoiadas sobre a bola",instrucao:"Sente-se na bola • Caminhe com os pés para frente até que a parte média das costas esteja apoiada • Abra os braços para os lados, relaxe a cabeça • Respire lentamente • Benefício: alonga peitoral, solta ombros e relaxa toda a coluna anterior.",equipamento:"Relaxamento com bola escolha 1 opção",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        
+        // Casa / baixa
+        {id:"d4_9",nome:"Respiração",instrucao:"Sente-se ou deite-se confortavelmente. Inspire pelo nariz, expandindo abdômen e costelas. Expire pela boca lentamente, soltando ombros e pescoço. • Repita em ritmo suave •  Benefícios: reduz cortisol, diminui tensão muscular e prepara o corpo para alongar.",equipamento:"",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+        {id:"d4_10",nome:"1. Alongamento da Coluna",instrucao:"Sente-se com pernas estendidas (ou levemente flexionadas). Inspire crescendo a coluna. Ao expirar, flexione o tronco para frente, desenrolando a coluna. Volte devagar inspirando. • Repita 3–5 vezes. • Objetivo: soltar toda a cadeia posterior e reduzir a rigidez da lombar.",equipamento:"2 alongamentos suaves à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_11",nome:"2. Alongamento Lateral – Sereia",instrucao:"Sente-se com pernas dobradas para um lado. Eleve o braço oposto às pernas. Incline o tronco lateralmente até sentir alongar costelas e cintura. • Respire 15–20 segundos. Repita para o outro lado. • Objetivo: aliviar tensão de tronco, oblíquos e região costal.",equipamento:"2 alongamentos suaves à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_12",nome:"3. Alongamento do Posterior",instrucao:"Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima e puxe suavemente até sentir alongar • Segure 20–25 s • Repita com a outra perna • Objetivo: soltar posteriores e diminuir tensão lombar.",equipamento:"2 alongamentos suaves à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_13",nome:"4. Gato–Vaca",instrucao:"Em quatro apoios, mãos sob ombros. Inspire arqueando lombar (vaca) • Expire arredondando coluna (gato). • Repita 8–10 ciclos lentos. • Objetivo: lubrificar articulações da coluna e aliviar dores de tensão.",equipamento:"2 alongamentos suaves à escolha",energia:"baixa",contexto:"casa",categoria:"Mobilidade"},
+        {id:"d4_14",nome:"5. Alongamento de Peitoral na Parede",instrucao:"Apoie a palma da mão na parede, braço estendido • Gire o tronco suavemente para longe da parede • Segure 15–20 s • Troque o lado.",equipamento:"2 alongamentos suaves à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d4_15",nome:"6. Alongamento de Pescoço",instrucao:"Incline a cabeça para o lado, aproximando a orelha do ombro • Respire 10–15 s • Troque o lado • Depois, leve o queixo ao peito por 10–15 s •  Objetivo: aliviar dor cervical, muito comum em dias de fadiga.",equipamento:"2 alongamentos suaves à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+       // Casa dos pais
+        {id:"d4_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d4_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d4_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d4_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d4_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d4_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d4_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+       
+      ],
+      5: [
+        // Casa / alta
+        {id:"d5_1",nome:"Esteira 10–15 min",instrucao:"Ritmo confortável, sem esforço respiratório • Esforço recomendado: 3/10 • Mantenha passos curtos e postura ereta • Se sentir peso nas pernas, finalize antes. ✔ Versão leve: Caminhar 5 minutos OU Pular a esteira e fazer apenas alongamentos.",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        {id:"d5_2",nome:"Ponte",instrucao:"Deite-se de barriga para cima, joelhos dobrados e pés paralelos no chão. Ative o abdômen levemente (umbigo “para dentro”). Inspire preparando. Ao expirar, eleve o quadril articulando a coluna vértebra por vértebra. Pare quando formar uma linha ombros–joelhos. Segure 1–2 segundos ativando glúteos. Inspire descendo devagar, reconstruindo a coluna no chão • Repita 6–10 vezes • Variação opcional (se estiver com boa energia): Elevar uma perna por vez no topo da ponte. MANTER quadril estável é mais importante que subir alto. Se a lombar incomodar, volte para a ponte simples • Benefícios: ativa glúteos + core e reduz rigidez lombar.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"mobilidade"},
+        {id:"d5_3",nome:"1. Abdução de quadril ",instrucao:"Mini band acima dos joelhos • Deitada de lado, pernas flexionadas. Ative o abdômen. Inspire. Ao expirar, abra o joelho superior contra a resistência da mini band. Mantenha os pés juntos. Desça devagar • Repita 8–12 vezes cada lado • Se fizer em pé: Mantenha-se apoiada na parede. Afaste a perna lateralmente devagar.",equipamento:"Mini Band escolha 1 ou 2",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d5_4",nome:"2. Marcha no lugar ",instrucao:"Mini band nos tornozelos • Fique em pé com joelhos levemente flexionados. Puxe o abdômen para dentro. Eleve o pé direito 10 cm do chão e volte. Eleve o pé esquerdo • Faça 10–20 marchas alternadas • Objetivo: ativar glúteos e estabilizar quadris sem impacto.",equipamento:"Mini Band escolha 1 ou 2",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d5_5",nome:"3. Caminhada lateral ",instrucao:"Mini band acima dos joelhos OU tornozelos • Flexione levemente os joelhos (semi-agachamento). Dê um passo curto para a direita, depois junte o outro pé. Ande 6–8 passos para a direita, depois para a esquerda • Faça somente se estiver com energia média/alta.",equipamento:"Mini Band escolha 1 ou 2",energia:"alta",contexto:"casa",categoria:"forca"},
+        
+        
+        // Casa / baixa
+        {id:"d5_6",nome:"Respiração",instrucao:"Sente-se ou deite-se confortavelmente. Inspire pelo nariz, expandindo abdômen e costelas. Expire pela boca lentamente, soltando ombros e pescoço. • Repita em ritmo suave •  Benefícios: reduz cortisol, diminui tensão muscular e prepara o corpo para alongar.",equipamento:"",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+        {id:"d5_7",nome:"Ponte Simples",instrucao:"Deite-se de barriga para cima, joelhos dobrados e pés paralelos no chão. Ative o abdômen levemente (umbigo “para dentro”). Inspire preparando. Ao expirar, eleve o quadril articulando a coluna vértebra por vértebra. Pare quando formar uma linha ombros–joelhos. Segure 1–2 segundos ativando glúteos. Inspire descendo devagar, reconstruindo a coluna no chão • Repita 6–10 vezes • Benefícios: ativa glúteos + core e reduz rigidez lombar.",equipamento:"Tapete",energia:"baixa",contexto:"casa",categoria:"mobilidade"},
+        {id:"d5_8",nome:"alongamento Posterior com fixa",instrucao:"Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima e puxe suavemente até sentir alongar • Segure 20–25 s • Repita com a outra perna • Objetivo: soltar posteriores e diminuir tensão lombar.",equipamento:"Alongamento leve (posterior ou coluna)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d5_9",nome:"alongamento de Coluna",instrucao:"Sente-se com pernas estendidas (ou levemente flexionadas). Inspire crescendo a coluna. Ao expirar, flexione o tronco para frente, desenrolando a coluna. Volte devagar inspirando. • Repita 3–5 vezes. • Objetivo: soltar toda a cadeia posterior e reduzir a rigidez da lombar.",equipamento:"Alongamento leve (posterior ou coluna)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+        // Casa dos pais
+        {id:"d5_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d5_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d5_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d5_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d5_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d5_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d5_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+        
+      ],
+      6: [
+        // Casa / alta
+        {id:"d6_1",nome:"Esteira leve 5–10 min",instrucao:"Caminhada leve, ritmo calmo •  Esforço máximo recomendado: 2–3/10 • Respiração tranquila.",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        {id:"d6_2",nome:"Remada",instrucao:"Sente-se com pernas estendidas OU flexionadas (como for mais confortável) • Passe a faixa nos pés e segure as pontas • Coluna ereta, ombros abaixados • Inspire • Ao expirar, puxe os cotovelos para trás, aproximando as escápulas • Mantenha os cotovelos próximos ao corpo • Inspire retornando devagar • Repita 8–12 vezes • Erros a evitar: Ombros encolhidos • Tranco na faixa • Curvar as costas •  Benefícios: fortalece dorsais, melhora postura e reduz dor entre omoplatas.",equipamento:"Faixa",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d6_3",nome:"Elevação lateral leve",instrucao:"Em pé ou sentada, coluna alinhada. Segure um halter em cada mão, braços ao lado do corpo. Inspire. Ao expirar, eleve os braços lateralmente até a altura dos ombros (ou menos, se houver desconforto). Cotovelos levemente flexionados. Inspire descendo devagar •  Repita 6–10 vezes •  Dicas: Mantenha ombros longe das orelhas. Não force amplitude — pare onde for confortável. Se estiver com dor nos ombros, reduza a carga ou elimine o exercício •  Benefícios: fortalece deltoides, melhora estabilidade e ajuda em gestos diários (pegar objetos, arrumar cabelo).",equipamento:"Halteres leves (1–2 kg)",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d6_4",nome:"Compressão de aro",instrucao:"Sente-se com coluna ereta • Segure o aro com as mãos na altura do peito • Cotovelos suavemente flexionados • Inspire • Ao expirar, pressione o aro com intensidade leve a moderada • Segure 1–2 segundos • Inspire relaxando devagar • Repita 8–10 vezes • Erros a evitar: Força excessiva (tremor) • Empurrar a cabeça para frente • Ombros elevados • Benefícios: ativa peitoral, tríceps e estabilizadores dos ombros sem impacto.",equipamento:"Aro",energia:"alta",contexto:"casa",categoria:"forca"},
+        
+        // Casa / baixa
+        {id:"d6_5",nome:"alongamento de Pescoço",instrucao:"Incline a cabeça para a direita, relaxando o ombro esquerdo • Respire por 15–20 s • Troque o lado • Em seguida, leve o queixo ao peito por 15 s • Objetivo: reduzir tensão cervical — muito comum em quem tem fibromialgia.",equipamento:"Alongamento de pescoço ou peitoral",energia:"baixa",contexto:"casa",categoria:"forca"},
+        {id:"d6_6",nome:"alongamento de Peitoral",instrucao:"Fique ao lado de uma parede • Apoie a mão direita na parede, braço estendido na altura do ombro • Gire suavemente o tronco para a esquerda até sentir alongar • Segure 15–20 s • Troque o lado • Objetivo: abrir peito, melhorar postura, aliviar ombros.",equipamento:"Alongamento de pescoço ou peitoral",energia:"baixa",contexto:"casa",categoria:"forca"},
+        {id:"d6_7",nome:"Ramada",instrucao:"Sente-se com pernas estendidas OU flexionadas (como for mais confortável) • Passe a faixa nos pés e segure as pontas • Coluna ereta, ombros abaixados • Inspire • Ao expirar, puxe os cotovelos para trás, aproximando as escápulas • Mantenha os cotovelos próximos ao corpo •Inspire retornando devagar • Repita 8–12 vezes • Erros a evitar: Ombros encolhidos • Tranco na faixa • Curvar as costas • Benefícios: fortalece dorsais, melhora postura e reduz dor entre omoplatas.",equipamento:"Alongamento (remada ou aro)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+         {id:"d6_8",nome:"Compressão de Aro",instrucao:"Sente-se com coluna ereta • Segure o aro com as mãos na altura do peito • Cotovelos suavemente flexionados • Inspire • Ao expirar, pressione o aro com intensidade leve a moderada • Segure 1–2 segundos • Inspire relaxando devagar • Repita 8–10 vezes • Erros a evitar: Força excessiva (tremor) • Empurrar a cabeça para frente • Ombros elevados • Benefícios: ativa peitoral, tríceps e estabilizadores dos ombros sem impacto.",equipamento:"Alongamento (remada ou aro)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+        // Casa dos pais
+        {id:"d6_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d6_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d6_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d6_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d6_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d6_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d6_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+       
+      ],
+      7: [
+        // Casa / alta
+        {id:"d7_1",nome:"1. Alongamento da Coluna",instrucao:"Sente-se com pernas estendidas • Inspire crescendo a coluna • Ao expirar, flexione o tronco para frente desenrolando a coluna • Volte devagar inspirando • Repita 3–5 vezes • Objetivo: soltar coluna, lombar e cadeia posterior.",equipamento:"Sessão de alongamentos (escolha 4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_2",nome:"2. Alongamento Lateral",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"Sessão de alongamentos (escolha 4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_3",nome:"3. Alongamento do Posterior com Faixa",instrucao:"(Opcional — você pode fazer sem faixa também) • Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima • Puxe suavemente até sentir alongar • Segure 20–25 s • Troque a perna • Objetivo: reduzir rigidez dos posteriores e aliviar lombar.",equipamento:"Sessão de alongamentos (escolha 4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_4",nome:"4. Gato–Vaca",instrucao:"Em quatro apoios • Inspire arqueando lombar (vaca) • Expire arredondando coluna (gato) • Repita 8–10 ciclos bem lentos • Objetivo: liberar coluna, aliviar tensões e melhorar mobilidade diária.",equipamento:"Sessão de alongamentos (escolha 4 a 6)",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+        {id:"d7_5",nome:"5. Alongamento de Peitoral",instrucao:"Braço estendido na parede • Gire o tronco suavemente para longe • Segure 15–20 s • Troque o lado • Objetivo: abrir peito, reduzir tensão cervical e dorsal.",equipamento:"Sessão de alongamentos (escolha 4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_6",nome:"6. Alongamento de Pescoço ",instrucao:"Incline a cabeça para a direita, segurando 15–20 s • Troque o lado • Em seguida, traga o queixo ao peito por 15 s • Objetivo: aliviar dores cervicais e tensão acumulada.",equipamento:"Sessão de alongamentos (escolha 4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+         {id:"d7_7",nome:"7. Alongamento de Quadril",instrucao:"Ajoelhe-se e sente nos calcanhares • Estenda braços à frente e deite o tronco entre as coxas • Respire 20–30 s • Volte devagar • Objetivo: alongar lombar, quadris e soltar parte superior do corpo.",equipamento:"Sessão de alongamentos (escolha 4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+         {id:"d7_8",nome:"1. Rotações de ombros",instrucao:"Em pé ou sentada, coluna ereta, pés apoiados no chão • Braços relaxados ao lado do corpo • Queixo paralelo ao chão, olhar à frente • Inspire pelo nariz • Ao expirar, leve os ombros suavemente para frente → para cima → para trás → para baixo, desenhando um círculo. • Inverta o sentido • 5 a 8 círculos para trás + 5 a 8 para frente • Cuidados: Movimento lento, sem “trancos”.",equipamento:"Mobilidade Leve (Inclua 1 ou 2)",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+         {id:"d7_9",nome:"2. Círculos de quadril",instrucao:"Em pé, pés afastados na largura do quadril • Joelhos levemente destravados (não deixe totalmente esticados) • Mãos apoiadas na cintura ou em uma cadeira/mesa à frente, se precisar de apoio • Leve o quadril devagar: para a direita → para frente → para a esquerda → para trás, fechando o círculo • Mantenha o tronco relativamente estável, sem jogar o peso para os joelhos • mude o sentido  • 5 a 8 círculos em um sentido + 5 a 8 no outro.",equipamento:"Mobilidade Leve (Inclua 1 ou 2)",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+         {id:"d7_10",nome:"3. Mobilidade de tornozelos",instrucao:"✔ Opção 1: Sentada na cadeira, coluna ereta • Pés apoiados no chão • Eleve a ponta dos pés, mantendo os calcanhares no chão • Volte a apoiar o pé todo • Depois, eleve os calcanhares, deixando a ponta dos pés no chão • Alterne “ponta sobe / calcanhar sobe” como se estivesse simulando uma marcha parada. ✔ Opção 2: Estenda uma perna à frente (pode manter o calcanhar apoiado no chão ou suspenso, conforme conforto) • Desenhe círculos com a ponta do pé: devagar, em um sentido e depois no outro • Repita com a outra perna • 10 a 15 repetições.",equipamento:"Mobilidade Leve (Inclua 1 ou 2)",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+         {id:"d7_11",nome:"4. Torção suave da coluna sentado",instrucao:"Sentada na cadeira, coluna ereta, pés bem apoiados no chão • Mantenha o peso distribuído igualmente nos dois lados do quadril. • Inspire crescendo a coluna (como se quisesse “alongar” o topo da cabeça para o teto) • Ao expirar, gire suavemente o tronco para a direita • Leve a mão esquerda em direção à coxa direita ou à lateral da cadeira • A mão direita pode apoiar no encosto ou na lateral da cadeira, sem “puxar” com força • Mantenha os ombros relaxados, longe das orelhas • Segure a posição por 3 a 5 respirações suaves • Volte devagar ao centro ao inspirar • Repita para o outro lado • 1 a 2 repetições para cada lado • Sustentar 20 a 30 segundos (ou 3 a 5 respirações) em cada lado, conforme tolerância • Objetivo: “lubrificar” articulações sem esforço.",equipamento:"Mobilidade Leve (Inclua 1 ou 2)",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+         {id:"d7_12",nome:"Relaxamento Final (opcional)",instrucao:"Deite-se e apoie as pernas na bola OU Deite as costas sobre a bola com apoio dos pés • Respire profundamente 1–2 minutos.",equipamento:"Bola",energia:"alta",contexto:"casa",categoria:"Recuperação"},
+        
+        // Casa / baixa
+        {id:"d7_13",nome:"Respiração suave",instrucao:"Sente-se ou deite-se em posição confortável • Inspire pelo nariz por 3–4 segundos• Expire pela boca devagar por 4–6 segundos • Deixe ombros, mandíbula e pescoço relaxarem • Continue até perceber o corpo “desligando” • Benefícios: regula o sistema nervoso, reduz dor e rigidez típica da fibromialgia.",equipamento:"Sem equipamento",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+       
+         {id:"d7_14",nome:"1. Alongamento da Coluna",instrucao:"Sente-se com pernas estendidas • Inspire crescendo a coluna • Ao expirar, flexione o tronco para frente desenrolando a coluna • Volte devagar inspirando • Repita 3–5 vezes • Objetivo: soltar coluna, lombar e cadeia posterior.",equipamento:"1 alongamento confortável (à escolha)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_15",nome:"2. Alongamento Lateral",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"1 alongamento confortável (à escolha)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_16",nome:"3. Alongamento do Posterior com Faixa",instrucao:"(Opcional — você pode fazer sem faixa também) • Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima • Puxe suavemente até sentir alongar • Segure 20–25 s • Troque a perna • Objetivo: reduzir rigidez dos posteriores e aliviar lombar.",equipamento:"1 alongamento confortável (à escolha)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_17",nome:"4. Gato–Vaca",instrucao:"Em quatro apoios • Inspire arqueando lombar (vaca) • Expire arredondando coluna (gato) • Repita 8–10 ciclos bem lentos • Objetivo: liberar coluna, aliviar tensões e melhorar mobilidade diária.",equipamento:"1 alongamento confortável (à escolha)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_18",nome:"5. Alongamento de Peitoral",instrucao:"Braço estendido na parede • Gire o tronco suavemente para longe • Segure 15–20 s • Troque o lado • Objetivo: abrir peito, reduzir tensão cervical e dorsal.",equipamento:"1 alongamento confortável (à escolha)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d7_19",nome:"6. Alongamento de Pescoço ",instrucao:"Incline a cabeça para a direita, segurando 15–20 s • Troque o lado • Em seguida, traga o queixo ao peito por 15 s • Objetivo: aliviar dores cervicais e tensão acumulada.",equipamento:"1 alongamento confortável (à escolha)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+         {id:"d7_20",nome:"7. Alongamento de Quadril",instrucao:"Ajoelhe-se e sente nos calcanhares • Estenda braços à frente e deite o tronco entre as coxas • Respire 20–30 s • Volte devagar • Objetivo: alongar lombar, quadris e soltar parte superior do corpo.",equipamento:"1 alongamento confortável (à escolha)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        
+       
+        // Casa dos pais
+        {id:"d7_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d7_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d7_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d7_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d7_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d7_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d7_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+      ],
+      8: [
+        // Casa / alta
+        {id:"d8_1",nome:"Esteira 10–15 min ",instrucao:"Ritmo confortável, sem esforço respiratório • Coluna ereta, olhar à frente • Esforço recomendado: 3–4/10 • Se cansar, reduza velocidade ✔ Versão leve: Caminhar 5 minutos OU  eliminar e fazer apenas alongamento final.",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        {id:"d8_2",nome:"Step-up",instrucao:"Apoie o pé direito inteiro no step • Pressione o calcanhar para elevar o corpo, subindo totalmente • Junte o pé esquerdo no step • Desça devagar com o pé direito, depois o esquerdo • Repita 8 vezes cada perna iniciando alternadamente • Use a parede ou cadeira ao lado para segurança. • Dicas importantes:Mantenha coluna ereta • Não deixe o joelho entrar para dentro • Evite subir rápido — movimento deve ser suave • Benefícios: força de pernas, equilíbrio e funcionalidade (escadas, inclinações).",equipamento:"Step",energia:"alta",contexto:"casa",categoria:"Equilibrio"},
+        {id:"d8_3",nome:"Ponte",instrucao:"Deite-se de barriga para cima com joelhos dobrados • Ative o abdômen suavemente • Inspire • Ao expirar, eleve o quadril articulando a coluna • Segure 1–2 segundos no topo • Desça devagar desenrolando vértebra por vértebra • Repita 8–12 vezes. ✔ Variação para energia mais alta: Faça ponte com elevação de calcanhares • Ou mantenha a ponte por 5 segundos ativando glúteos. ✔ Para energia baixa: Faça uma ponte mais baixa • Aumente a ênfase no alongamento, não na força.  • Benefícios: ativa glúteos, solta lombar, melhora estabilidade pélvica.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d8_4",nome:"Agachamento com bola",instrucao:"Coloque a bola entre a lombar e a parede • Pés afastados à frente do corpo (30–40 cm) • Inspire • Ao expirar, desça deslizando pela bola até um ângulo confortável • Pare entre 45° e 60° — sem forçar • Inspire subindo devagar mantendo controle • Repita 6–10 vezes. •  Dicas: Peso no calcanhar • Joelhos alinhados à ponta dos pés • Coluna neutra, sem arquear.  • Benefícios: fortalece quadríceps sem impacto e com suporte.",equipamento:"Bola",energia:"alta",contexto:"casa",categoria:"forca"},
+        
+        // Casa / baixa
+        {id:"d8_5",nome:"Esteira (5 min OU só alongar) ",instrucao:"Caminhar 5 minutos OU  eliminar e fazer apenas alongamento final.",equipamento:"Esteira",energia:"baixa",contexto:"casa",categoria:"cardio"},
+        {id:"d8_6",nome:"Respiração e Mobilidade",instrucao:"Inspire profundamente expandindo as costelas • Expire devagar relaxando ombros • Faça círculos de ombros (10x) • Pescoço: inclinações leves e giros suaves • Tornozelos: círculos para ativar circulação.",equipamento:"",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+        {id:"d8_7",nome:"Ponte Simples",instrucao:"Faça uma ponte mais baixa • Aumente a ênfase no alongamento, não na força.  • Benefícios: ativa glúteos, solta lombar, melhora estabilidade pélvica.",equipamento:"Tapete",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d8_8",nome:"alongamento posterior com faixa",instrucao:"(Opcional — você pode fazer sem faixa também) • Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima • Puxe suavemente até sentir alongar • Segure 20–25 s • Troque a perna • Objetivo: reduzir rigidez dos posteriores e aliviar lombar.",equipamento:"Alongamento final (opcional)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d8_9",nome:"Torção sentada",instrucao:"Sentada na cadeira, coluna ereta, pés bem apoiados no chão • Mantenha o peso distribuído igualmente nos dois lados do quadril. • Inspire crescendo a coluna (como se quisesse “alongar” o topo da cabeça para o teto) • Ao expirar, gire suavemente o tronco para a direita • Leve a mão esquerda em direção à coxa direita ou à lateral da cadeira • A mão direita pode apoiar no encosto ou na lateral da cadeira, sem “puxar” com força • Mantenha os ombros relaxados, longe das orelhas • Segure a posição por 3 a 5 respirações suaves • Volte devagar ao centro ao inspirar • Repita para o outro lado • 1 a 2 repetições para cada lado • Sustentar 20 a 30 segundos (ou 3 a 5 respirações) em cada lado, conforme tolerância • Objetivo: “lubrificar” articulações sem esforço.",equipamento:"Alongamento final (opcional)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d8_10",nome:"alongamento Laterial",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"Alongamento final (opcional)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+       // Casa dos pais
+        {id:"d8_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d8_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d8_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d8_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d8_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d8_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d8_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+      ],
+      9: [
+        // Casa / alta
+        {id:"d9_1",nome:"alongamento da Coluna",instrucao:"Sente-se com pernas estendidas • Inspire crescendo a coluna • Ao expirar, flexione o tronco para frente desenrolando a coluna • Volte devagar inspirando • Repita 3–5 vezes • Objetivo: soltar coluna, lombar e cadeia posterior.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d9_2",nome:"alongamento Lateral",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d9_3",nome:"alongamento Posterior com Faixa",instrucao:"Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima e puxe suavemente até sentir alongar • Segure 20–25 s • Repita com a outra perna • Objetivo: soltar posteriores e diminuir tensão lombar.",equipamento:"Faixa",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d9_4",nome:"Gato–Vaca",instrucao:"Em quatro apoios • Inspire arqueando lombar (vaca) • Expire arredondando coluna (gato) • Repita 8–10 ciclos bem lentos • Objetivo: liberar coluna, aliviar tensões e melhorar mobilidade diária.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"Mobilidade"},
+        
+        // Casa / baixa
+        {id:"d9_5",nome:"Respiração suave",instrucao:"Sente-se ou deite-se em posição confortável • Inspire pelo nariz por 3–4 segundos• Expire pela boca devagar por 4–6 segundos • Deixe ombros, mandíbula e pescoço relaxarem• Continue até perceber o corpo “desligando” • Benefícios: regula o sistema nervoso, reduz dor e rigidez típica da fibromialgia.",equipamento:"",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+        {id:"d9_6",nome:"alongamento da Coluna",instrucao:"Sente-se com pernas estendidas • Inspire crescendo a coluna • Ao expirar, flexione o tronco para frente desenrolando a coluna • Volte devagar inspirando • Repita 3–5 vezes • Objetivo: soltar coluna, lombar e cadeia posterior.",equipamento:"2 alongamentos à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d9_7",nome:"alongamento Lateral",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"2 alongamentos à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d9_8",nome:"alongamento Posterior com Faixa",instrucao:"Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima e puxe suavemente até sentir alongar • Segure 20–25 s • Repita com a outra perna • Objetivo: soltar posteriores e diminuir tensão lombar.",equipamento:"2 alongamentos à escolha",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+        // Casa dos pais
+        {id:"d9_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"Find",categoria:"cardio"},
+        {id:"d9_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"Find",categoria:"mobilidade"},
+        {id:"d9_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"Find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d9_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d9_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d9_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d9_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+       
+      ],
+      10: [
+        // Casa / alta
+        {id:"d10_1",nome:"Esteira leve ",instrucao:"Caminhada leve, ritmo calmo • Esforço máximo recomendado: 2–3/10 • Respiração tranquila.",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        {id:"d10_2",nome:"Remada",instrucao:"Sente-se com pernas estendidas OU flexionadas (como for mais confortável) • Passe a faixa nos pés e segure as pontas • Coluna ereta, ombros abaixados • Inspire • Ao expirar, puxe os cotovelos para trás, aproximando as escápulas • Mantenha os cotovelos próximos ao corpo • Inspire retornando devagar • Repita 8–12 vezes • Erros a evitar: Ombros encolhidos • Tranco na faixa • Curvar as costas •  Benefícios: fortalece dorsais, melhora postura e reduz dor entre omoplatas.",equipamento:"Faixa",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d10_3",nome:"Bíceps com 1–2 kg",instrucao:"Sente-se ou fique em pé com coluna ereta.Segure um halter em cada mão, braços ao lado do corpo, palmas voltadas para frente. Inspire. Ao expirar, flexione os cotovelos, trazendo os pesos em direção aos ombros sem mover a parte superior dos braços. Inspire descendo lentamente, mantendo controle • Repita 8–10 vezes • Dicas: Cotovelos sempre colados ao tronco. Punhos neutros (não dobre para trás). Movimentos lentos, sem balanço do corpo • Benefícios: ativa bíceps sem sobrecarregar ombros, ajuda em atividades diárias como carregar objetos leves.",equipamento:"Bíceps ou aro",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d10_4",nome:"Compressão de Aro",instrucao:"Sente-se com coluna ereta • Segure o aro com as mãos na altura do peito • Cotovelos suavemente flexionados • Inspire • Ao expirar, pressione o aro com intensidade leve a moderada • Segure 1–2 segundos • Inspire relaxando devagar • Repita 8–10 vezes • Erros a evitar: Força excessiva (tremor) • Empurrar a cabeça para frente • Ombros elevados • Benefícios: ativa peitoral, tríceps e estabilizadores dos ombros sem impacto.",equipamento:"Bíceps ou aro",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d10_5",nome:"Equilibrio no disco",instrucao:"Coloque o disco no chão próximo a uma parede, mesa ou cadeira firme. Suba no disco com um pé de cada vez, mantendo joelhos levemente flexionados. Segure no apoio até sentir segurança. Quando estiver estável, solte o apoio somente se se sentir confiante. Mantendo abdômen levemente ativado, tente permanecer estável por 20–30 segundos. Desça devagar segurando no apoio • Variação mais leve: Fique apenas com um pé no disco e outro no chão. Ou sente-se sobre o disco para ativar o core de forma mais suave • Benefícios: melhora equilíbrio, propriocepção e estabilidade das articulações.",equipamento:"Disco de Equilíbrio",energia:"alta",contexto:"casa",categoria:"Equilíbrio"},
+        
+        // Casa / baixa
+        {id:"d10_6",nome:"Esteira 3-5 min (opcional)",instrucao:"Caminhe 3 minutos OU elimine a esteira.",equipamento:"Esteira",energia:"baixa",contexto:"casa",categoria:"cardio"},
+        {id:"d10_7",nome:"Remada",instrucao:"Sente-se com pernas estendidas OU flexionadas (como for mais confortável) • Passe a faixa nos pés e segure as pontas • Coluna ereta, ombros abaixados • Inspire • Ao expirar, puxe os cotovelos para trás, aproximando as escápulas • Mantenha os cotovelos próximos ao corpo •Inspire retornando devagar • Repita 8–12 vezes • Erros a evitar: Ombros encolhidos • Tranco na faixa • Curvar as costas • Benefícios: fortalece dorsais, melhora postura e reduz dor entre omoplatas.",equipamento:"Faixa",energia:"baixa",contexto:"casa",categoria:""},
+        {id:"d10_8",nome:"Compressão de aro",instrucao:"Sente-se com coluna ereta • Segure o aro com as mãos na altura do peito • Cotovelos suavemente flexionados • Inspire • Ao expirar, pressione o aro com intensidade leve a moderada • Segure 1–2 segundos • Inspire relaxando devagar • Repita 8–10 vezes • Erros a evitar: Força excessiva (tremor) • Empurrar a cabeça para frente • Ombros elevados • Benefícios: ativa peitoral, tríceps e estabilizadores dos ombros sem impacto.",equipamento:"Aro",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+        // Casa dos pais
+        {id:"d10_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d10_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d10_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d10_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d10_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+         {id:"d10_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d10_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+      ],
+      11: [
+        // Casa / alta
+        {id:"d11_1",nome:"alongamento da Coluna",instrucao:"Sente-se com pernas estendidas • Inspire crescendo a coluna • Ao expirar, flexione o tronco para frente desenrolando a coluna • Volte devagar inspirando • Repita 3–5 vezes • Objetivo: soltar coluna, lombar e cadeia posterior.",equipamento:"Sessão de alongamentos (4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d11_2",nome:"alongamento Lateral",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"Sessão de alongamentos (4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d11_3",nome:"alongamento Posterior com Faixa",instrucao:"Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima e puxe suavemente até sentir alongar • Segure 20–25 s • Repita com a outra perna • Objetivo: soltar posteriores e diminuir tensão lombar.",equipamento:"Sessão de alongamentos (4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d11_4",nome:"Gato–Vaca",instrucao:"Em quatro apoios • Inspire arqueando lombar (vaca) • Expire arredondando coluna (gato) • Repita 8–10 ciclos bem lentos • Objetivo: liberar coluna, aliviar tensões e melhorar mobilidade diária.",equipamento:"Sessão de alongamentos (4 a 6)",energia:"alta",contexto:"casa",categoria:"mobilidade"},
+        {id:"d11_5",nome:"alongamento de Pescoço",instrucao:"Incline a cabeça para a direita, segurando 15–20 s • Troque o lado • Em seguida, traga o queixo ao peito por 15 s • Objetivo: aliviar dores cervicais e tensão acumulada.",equipamento:"Sessão de alongamentos (4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d11_6",nome:"alongamento de Peitoral na Parede",instrucao:"Braço estendido na parede • Gire o tronco suavemente para longe • Segure 15–20 s • Troque o lado • Objetivo: abrir peito, reduzir tensão cervical e dorsal.",equipamento:"Sessão de alongamentos (4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d11_7",nome:"Criança",instrucao:"Ajoelhe-se e sente-se sobre os calcanhares • Alongue os braços à frente e deite o tronco entre as coxas • Respire profundamente 20–30 s • Alivia: lombar, quadris e parte superior das costas.",equipamento:"Sessão de alongamentos (4 a 6)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        
+        // Casa / baixa
+        {id:"d11_8",nome:"Respiração",instrucao:"Inspire pelo nariz por 3–4 segundos • Expire pela boca por 5–6 segundos, relaxando ombros e mandíbula • Sinta as costelas expandirem em 3D (frente, lados e costas) • Repita lentamente, deixando o corpo “desarmar”.",equipamento:"",energia:"baixa",contexto:"casa",categoria:""},
+        {id:"d11_9",nome:"Rotação espinhal",instrucao:"Deite-se de barriga para cima • Flexione os joelhos e coloque a bola sob as panturrilhas • Gire lentamente os quadris e as pernas para um dos lados, levando os joelhos em direção ao chão • A bola rolará sob as panturrilhas.",equipamento:"Bola",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        
+       
+        // Casa dos pais
+        {id:"d11_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d11_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d11_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d11_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d11_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+         {id:"d11_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d11_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+      ],
+      12: [
+        // Casa / alta
+        {id:"d12_1",nome:"Esteira 10–15 min",instrucao:"Ritmo confortável, sem esforço respiratório • Coluna ereta, olhar à frente • Esforço recomendado: 3–4/10 • Se cansar, reduza velocidade ✔ Versão leve: Caminhar 5 minutos OU  eliminar e fazer apenas alongamento final.",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        {id:"d12_2",nome:"Ponte",instrucao:"Deite-se de barriga para cima com joelhos dobrados • Ative o abdômen suavemente • Inspire • Ao expirar, eleve o quadril articulando a coluna • Segure 1–2 segundos no topo • Desça devagar desenrolando vértebra por vértebra • Repita 8–12 vezes. ✔ Variação para energia mais alta: Faça ponte com elevação de calcanhares • Ou mantenha a ponte por 5 segundos ativando glúteos. ✔ Para energia baixa: Faça uma ponte mais baixa • Aumente a ênfase no alongamento, não na força.  • Benefícios: ativa glúteos, solta lombar, melhora estabilidade pélvica.",equipamento:"Tapete",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d12_3",nome:"1. Abdução Deitada ",instrucao:"Mini band acima dos joelhos • Deite-se de lado • Pernas flexionadas • Inspire • Ao expirar, abra o joelho de cima, mantendo os pés juntos • Desça devagar • Repita 8–12 vezes cada lado • Foco: glúteo médio (estabilizador da pélvis).",equipamento:"Mini band escolha 1 ou 2",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d12_4",nome:"2. Marcha ",instrucao:"Mini band nos tornozelos • Em pé, joelhos levemente flexionados • Eleve um pé 5–10 cm e retorne • Repita alternando as pernas (10–20 repetições) • Foco: equilíbrio + ativação leve do core.",equipamento:"Mini band escolha 1 ou 2",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d12_5",nome:"3. Caminhada Lateral ",instrucao:"Mini band acima dos joelhos ou tornozelos  • Flexão suave de joelhos • Dê passos laterais curtos e controlados • 6–8 passos para a direita, depois para a esquerda • ⚠️ Faça apenas se estiver com energia média/boa.",equipamento:"Mini band escolha 1 ou 2",energia:"alta",contexto:"casa",categoria:"forca"},
+        
+        // Casa / baixa
+        {id:"d12_6",nome:"Esteira 3-5 min (opcional)",instrucao:"Caminhe 3 minutos OU elimine a esteira.",equipamento:"Esteira",energia:"baixa",contexto:"casa",categoria:"cardio"},
+        {id:"d12_7",nome:"Respiração",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+         {id:"d12_8",nome:"Ponte Simples",instrucao:"Faça uma ponte mais baixa • Aumente a ênfase no alongamento, não na força.  • Benefícios: ativa glúteos, solta lombar, melhora estabilidade pélvica.",equipamento:"Tapete",energia:"baixa",contexto:"casa",categoria:""},
+          {id:"d12_9",nome:"alongamento posterior com faixa",instrucao:"Deite-se de barriga para cima • Passe a faixa no pé direito • Estenda a perna para cima e puxe suavemente até sentir alongar • Segure 20–25 s • Repita com a outra perna • Objetivo: soltar posteriores e diminuir tensão lombar.",equipamento:"1 Alongamento Final (opcional)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+          {id:"d12_10",nome:"alongamento Lateral",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"1 Alongamento Final (opcional)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+          {id:"d12_11",nome:"Torção Sentada",instrucao:"Sentada na cadeira, coluna ereta, pés bem apoiados no chão • Mantenha o peso distribuído igualmente nos dois lados do quadril. • Inspire crescendo a coluna (como se quisesse “alongar” o topo da cabeça para o teto) • Ao expirar, gire suavemente o tronco para a direita • Leve a mão esquerda em direção à coxa direita ou à lateral da cadeira • A mão direita pode apoiar no encosto ou na lateral da cadeira, sem “puxar” com força • Mantenha os ombros relaxados, longe das orelhas • Segure a posição por 3 a 5 respirações suaves • Volte devagar ao centro ao inspirar • Repita para o outro lado • 1 a 2 repetições para cada lado • Sustentar 20 a 30 segundos (ou 3 a 5 respirações) em cada lado, conforme tolerância • Objetivo: “lubrificar” articulações sem esforço.",equipamento:"1 Alongamento Final (opcional)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        
+       
+        // Casa dos pais
+        {id:"d12_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d12_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d12_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d12_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d12_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d12_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d12_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+        
+      ],
+      13: [
+        // Casa / alta
+        {id:"d13_1",nome:"Remada",instrucao:"Sente-se com pernas estendidas OU flexionadas (como for mais confortável) • Passe a faixa nos pés e segure as pontas • Coluna ereta, ombros abaixados • Inspire • Ao expirar, puxe os cotovelos para trás, aproximando as escápulas • Mantenha os cotovelos próximos ao corpo • Inspire retornando devagar • Repita 8–12 vezes • Erros a evitar: Ombros encolhidos • Tranco na faixa • Curvar as costas •  Benefícios: fortalece dorsais, melhora postura e reduz dor entre omoplatas.",equipamento:"Faixa",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d13_2",nome:"Compressão de Aro",instrucao:"Sente-se com coluna ereta • Segure o aro com as mãos na altura do peito • Cotovelos suavemente flexionados • Inspire • Ao expirar, pressione o aro com intensidade leve a moderada • Segure 1–2 segundos • Inspire relaxando devagar • Repita 8–10 vezes • Erros a evitar: Força excessiva (tremor) • Empurrar a cabeça para frente • Ombros elevados • Benefícios: ativa peitoral, tríceps e estabilizadores dos ombros sem impacto.",equipamento:"Aro",energia:"alta",contexto:"casa",categoria:"forca"},
+        {id:"d13_3",nome:"Equilíbrio no disco",instrucao:"Coloque o disco no chão próximo a uma parede, mesa ou cadeira firme. Suba no disco com um pé de cada vez, mantendo joelhos levemente flexionados. Segure no apoio até sentir segurança. Quando estiver estável, solte o apoio somente se se sentir confiante. Mantendo abdômen levemente ativado, tente permanecer estável por 20–30 segundos. Desça devagar segurando no apoio • Variação mais leve: Fique apenas com um pé no disco e outro no chão. Ou sente-se sobre o disco para ativar o core de forma mais suave • Benefícios: melhora equilíbrio, propriocepção e estabilidade das articulações.",equipamento:"Disco de equilíbrio",energia:"alta",contexto:"casa",categoria:"Equilíbrio"},
+       
+        
+        // Casa / baixa
+        {id:"d13_4",nome:"Ramada",instrucao:"Sente-se com pernas estendidas OU flexionadas (como for mais confortável) • Passe a faixa nos pés e segure as pontas • Coluna ereta, ombros abaixados • Inspire • Ao expirar, puxe os cotovelos para trás, aproximando as escápulas • Mantenha os cotovelos próximos ao corpo • Inspire retornando devagar • Repita 8–12 vezes • Erros a evitar: Ombros encolhidos • Tranco na faixa • Curvar as costas • Benefícios: fortalece dorsais, melhora postura e reduz dor entre omoplatas.",equipamento:"Alongamento (remada ou aro)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+         {id:"d13_5",nome:"Compressão de Aro",instrucao:"Sente-se com coluna ereta • Segure o aro com as mãos na altura do peito • Cotovelos suavemente flexionados • Inspire • Ao expirar, pressione o aro com intensidade leve a moderada • Segure 1–2 segundos • Inspire relaxando devagar • Repita 8–10 vezes • Erros a evitar: Força excessiva (tremor) • Empurrar a cabeça para frente • Ombros elevados • Benefícios: ativa peitoral, tríceps e estabilizadores dos ombros sem impacto.",equipamento:"Alongamento (remada ou aro)",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+         {id:"d13_6",nome:"Respiração e mobilidade",instrucao:"Inspire profundamente expandindo as costelas • Expire devagar relaxando ombros • Faça círculos de ombros (10x) • Pescoço: inclinações leves e giros suaves • Tornozelos: círculos para ativar circulação.",equipamento:"",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+         {id:"d13_7",nome:"Equilíbrio sentado no disco",instrucao:"Coloque o disco no chão próximo a uma parede, mesa ou cadeira firme. Suba no disco com um pé de cada vez, mantendo joelhos levemente flexionados. Segure no apoio até sentir segurança. Quando estiver estável, solte o apoio somente se se sentir confiante. Mantendo abdômen levemente ativado, tente permanecer estável por 20–30 segundos. Desça devagar segurando no apoio • Variação mais leve: Fique apenas com um pé no disco e outro no chão. Ou sente-se sobre o disco para ativar o core de forma mais suave • Benefícios: melhora equilíbrio, propriocepção e estabilidade das articulações.",equipamento:"Disco de equilíbrio (opcional)",energia:"baixa",contexto:"casa",categoria:"Equilíbrio"},
+        
+       
+        // Casa dos pais
+        {id:"d13_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"ind",categoria:"cardio"},
+        {id:"d13_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d13_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d13_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d13_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d13_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d13_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+      
+      ],
+      14: [
+        // Casa / alta
+        {id:"d14_1",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.✔ Versão leve: Caminhar 3–5 min OU Não caminhar e focar apenas nos alongamentos.",equipamento:"Esteira",energia:"alta",contexto:"casa",categoria:"cardio"},
+        {id:"d14_2",nome:"1. Alongamento de Pescoço ",instrucao:"Incline a cabeça para a direita, segurando 15–20 s • Troque o lado • Em seguida, traga o queixo ao peito por 15 s • Objetivo: aliviar dores cervicais e tensão acumulada.",equipamento:"Alongamento curto (1 ou 2 exercícios)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d14_3",nome:"2. Alongamento Lateral ",instrucao:"Sente-se com pernas dobradas para um lado • Eleve o braço oposto • Incline o tronco suavemente para o lado das pernas • Respire 15–20 s • Troque o lado • Objetivo: aliviar tensão de tronco, cintura e região intercostal.",equipamento:"Sessão de alongamentos (4 a 6)",equipamento:"Alongamento curto (1 ou 2 exercícios)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        {id:"d14_4",nome:"3. Alongamento da coluna ",instrucao:"Sente-se com pernas estendidas • Inspire crescendo a coluna • Ao expirar, flexione o tronco para frente desenrolando a coluna • Volte devagar inspirando • Repita 3–5 vezes • Objetivo: soltar coluna, lombar e cadeia posterior.",equipamento:"Sessão de alongamentos (4 a 6)",equipamento:"Alongamento curto (1 ou 2 exercícios)",energia:"alta",contexto:"casa",categoria:"Alongamento"},
+        
+        // Casa / baixa
+        {id:"d14_5",nome:"Respiração suave",instrucao:"Sente-se ou deite-se em posição confortável • Inspire pelo nariz por 3–4 segundos• Expire pela boca devagar por 4–6 segundos • Deixe ombros, mandíbula e pescoço relaxarem• Continue até perceber o corpo “desligando” • Benefícios: regula o sistema nervoso, reduz dor e rigidez típica da fibromialgia.",equipamento:"",energia:"baixa",contexto:"casa",categoria:"respiracao"},
+        {id:"d14_6",nome:"1. Pernas elevadas ",instrucao:"Deite-se perto de uma parede e apoie as pernas verticalmente • Respire profundamente 1–2 min.",equipamento:"Relaxamento com ou sem bola",energia:"baixa",contexto:"casa",categoria:"recuperação"},
+        {id:"d14_7",nome:"2. Costas apoiadas na bola (opcional)",instrucao:"Deite-se sobre a bola com apoio nos pés • Deixe a cabeça e braços relaxarem • Respire devagar.",equipamento:"Relaxamento com ou sem bola",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d14_8",nome:"1. Alongamento de Pescoço",instrucao:"Incline a cabeça para a direita, segurando 15–20 s • Troque o lado • Em seguida, traga o queixo ao peito por 15 s • Objetivo: aliviar dores cervicais e tensão acumulada.",equipamento:"1 Alongamento Final",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+        {id:"d14_9",nome:"2. Alongamento da coluna ",instrucao:"Sente-se com pernas estendidas • Inspire crescendo a coluna • Ao expirar, flexione o tronco para frente desenrolando a coluna • Volte devagar inspirando • Repita 3–5 vezes • Objetivo: soltar coluna, lombar e cadeia posterior.",equipamento:"Sessão de alongamentos (4 a 6)",equipamento:"1 Alongamento Final",energia:"baixa",contexto:"casa",categoria:"Alongamento"},
+       
+        // Casa dos pais
+        {id:"d14_pais_caminhada",nome:"Caminhada leve 10–20 min",instrucao:"Ritmo confortável, podendo conversar.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"cardio"},
+        {id:"d14_pais_along_sem",nome:"alongamento em pé",instrucao:"Alongar pescoço, ombros, pernas, sem equipamento.",equipamento:"Sem equipamento",energia:"alta",contexto:"find",categoria:"mobilidade"},
+        {id:"d14_pais_resp",nome:"Respiração + alongamento sentado",instrucao:"Respiração profunda e alongamentos leves sentado.",equipamento:"Sem equipamento",energia:"baixa",contexto:"find",categoria:"respiracao"},
+        
+        // Viagem
+        {id:"d14_viagem_resp",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"respiracao"},
+        {id:"d14_viagem_along_cama",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"baixa",contexto:"viagem",categoria:"mobilidade"},
+        {id:"d14_viagem_resp2",nome:"Respiração na cama",instrucao:"Deitada, respiração diafragmática por 3–5 min.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"respiracao"},
+        {id:"d14_viagem_along_cama2",nome:"alongamento na cama",instrucao:"Esticar pernas e braços, movimentos suaves.",equipamento:"Sem equipamento",energia:"alta",contexto:"viagem",categoria:"mobilidade"},
+        
+      ]
+        
+    };
+
+
+/* =========================
+   RENDER – MÍNIMO FUNCIONAL
+   (cole após fechar baseExOptions com "};")
+========================= */
+
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;").replaceAll("<","&lt;")
+    .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function logExerciseDone(dayIndex, exercise) {
+  state.exerciseLogByDay = state.exerciseLogByDay || {};
+  if (!state.exerciseLogByDay[dayIndex]) state.exerciseLogByDay[dayIndex] = [];
+
+  // evita duplicar o mesmo exercício no mesmo dia
+  const already = state.exerciseLogByDay[dayIndex].some(x => x.exerciseId === exercise.id);
+  if (already) return;
+
+  state.exerciseLogByDay[dayIndex].push({
+    exerciseId: exercise.id,
+    categoria: exercise.categoria || "mobilidade", // fallback seguro
+    ts: Date.now()
+  });
+
+  saveState();
+}
+
+function unlogExerciseDone(dayIndex, exerciseId) {
+  if (!state.exerciseLogByDay?.[dayIndex]) return;
+  state.exerciseLogByDay[dayIndex] = state.exerciseLogByDay[dayIndex].filter(x => x.exerciseId !== exerciseId);
+  saveState();
+}
+
+function getExercisesForDay(day){
+  // base + (futuro) custom
+  const base = Array.isArray(baseExOptions?.[day]) ? baseExOptions[day] : [];
+  return base;
+}
+
+function isExerciseDone(day, exId){
+  const key = `${day}__${exId}`;
+  return !!state.exState?.[key];
+}
+function setExerciseDone(day, exId, done){
+  const key = `${day}__${exId}`;
+  state.exState = state.exState || {};
+  state.exState[key] = !!done;
+  persistState();
+}
+
+function groupBy(arr, keyFn){
+  const m = new Map();
+  arr.forEach(item=>{
+    const k = keyFn(item) || "Sem equipamento";
+    if(!m.has(k)) m.set(k, []);
+    m.get(k).push(item);
+  });
+  return m;
+}
+
+// Esteira sempre primeiro
+function sortEquipKeys(keys){
+  return keys.sort((a,b)=>{
+    const A = String(a||"").toLowerCase();
+    const B = String(b||"").toLowerCase();
+    const aIs = A.includes("esteira");
+    const bIs = B.includes("esteira");
+    if(aIs && !bIs) return -1;
+    if(!aIs && bIs) return 1;
+    return A.localeCompare(B, "pt-BR");
+  });
+}
+
+function renderExercises(){
+  const day = getSelectedDay();
+  const energy = getDayEnergy(day);
+  const ctx = getDayContext(day);
+
+  badgeExDia.textContent = `Dia ${day}`;
+  exContextLabel.textContent = `${ctx.toUpperCase()} • energia ${energy}`;
+
+  const all = getExercisesForDay(day);
+
+  // normaliza "contexto" e "energia" do cadastro
+  const filtered = all.filter(ex =>
+    normalizeContext(ex.contexto) === ctx &&
+    normalizeEnergy(ex.energia) === energy
+  );
+
+  if(!filtered.length){
+    exerciseContent.innerHTML =
+      `<div class="empty-message">Sem exercícios cadastrados para <b>${ctx}</b> com energia <b>${energy}</b> no dia ${day}.</div>`;
+    return;
+  }
+
+  const groups = groupBy(filtered, ex => (ex.equipamento || "Sem equipamento").trim());
+  const equipKeys = sortEquipKeys(Array.from(groups.keys()));
+
+  let html = "";
+  equipKeys.forEach(equip=>{
+    const list = groups.get(equip) || [];
+    html += `
+      <div class="exercise-block">
+        <div class="exercise-title">🧩 ${escapeHtml(equip)}</div>
+        <ul class="exercise-list">
+    `;
+
+    list.forEach(ex=>{
+      const done = isExerciseDone(day, ex.id);
+      html += `
+        <li class="exercise-item">
+          <input type="checkbox" ${done ? "checked" : ""} data-exdone="${escapeHtml(ex.id)}" />
+          <div class="task-main">
+            <div class="task-label-main">${escapeHtml(ex.nome)}</div>
+            ${ex.instrucao ? `<div class="task-details" style="display:block;">${escapeHtml(ex.instrucao)}</div>` : ""}
+          </div>
+        </li>
+      `;
+    });
+
+    html += `
+        </ul>
+      </div>
+    `;
+  });
+
+  exerciseContent.innerHTML = html;
+
+  // eventos (checkbox)
+  exerciseContent.querySelectorAll('input[data-exdone]').forEach(cb=>{
+    cb.addEventListener("change", (e)=>{
+      const exId = e.target.getAttribute("data-exdone");
+      setExerciseDone(day, exId, e.target.checked);
+      renderExerciseStats(); // atualiza resumo
+    });
+  });
+}
+
+function renderExerciseStats(){
+  // resumo simples: % dias com movimento (se marcou algum exercício no dia)
+  let daysWithMove = 0;
+  for(let d=1; d<=14; d++){
+    const dayList = getExercisesForDay(d);
+    const anyDone = dayList.some(ex => isExerciseDone(d, ex.id));
+    if(anyDone) daysWithMove++;
+  }
+  const pct = Math.round((daysWithMove/14)*100);
+  badgeExResumo.textContent = `${pct}% (dias com movimento)`;
+
+  exerciseStats.innerHTML = `
+    <div class="stats-row">
+      <div class="stats-chip">Dias com movimento: <b>${daysWithMove}</b>/14</div>
+      <div class="stats-chip">Meta: consistência, não perfeição ✨</div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label">Dias com movimento</div>
+      <div class="bar"><div class="bar-fill" style="width:${pct}%;"></div></div>
+    </div>
+  `;
+}
+
+
+
+    function normalizeExerciseObj(ex){
+      const e = Object.assign({}, ex);
+      e.nome = e.nome ?? e.name ?? "";
+      e.instrucao = e.instrucao ?? e.instructions ?? "";
+      e.equipamento = e.equipamento ?? "Sem equipamento";
+      e.energia = normalizeEnergy(e.energia);
+      e.contexto = normalizeContext(e.contexto);
+      e.categoria = String(e.categoria || "outros").toLowerCase();
+      return e;
+    }
+
+    function ensureExOptionsState(){
+      if(!state.exOptionsState){
+        const clone = deepClone(baseExOptions);
+        Object.keys(clone).forEach(d=>{
+          clone[d] = (clone[d] || []).map(normalizeExerciseObj);
+        });
+        state.exOptionsState = clone;
+        persistState();
+      }else{
+        // garante normalização leve
+        Object.keys(state.exOptionsState).forEach(d=>{
+          state.exOptionsState[d] = (state.exOptionsState[d] || []).map(normalizeExerciseObj);
+        });
+      }
+      return state.exOptionsState;
+    }
+
+    function getExDayOptions(day){
+      const exOpt = ensureExOptionsState();
+      return (exOpt[day] || []).map(normalizeExerciseObj);
+    }
+
+    function getExDoneState(day){
+      if(!state.exState[day]) state.exState[day] = {};
+      return state.exState[day];
+    }
+
+    function toggleExerciseDone(day, exId){
+      const ds = getExDoneState(day);
+      ds[exId] = !ds[exId];
+      persistState();
+      renderExercises();
+    }
+
+    function addExercise(day, payload){
+      const exOpt = ensureExOptionsState();
+      if(!exOpt[day]) exOpt[day] = [];
+      const id = `d${day}_custom_${Date.now()}`;
+      exOpt[day].push(normalizeExerciseObj(Object.assign({id}, payload)));
+      persistState();
+      renderExercises();
+    }
+
+    function editExercise(day, exId){
+      const exOpt = ensureExOptionsState();
+      const list = exOpt[day] || [];
+      const ex = list.find(x => x.id === exId);
+      if(!ex) return;
+
+      currentExEdit = { day, exId };
+
+      editExName.value = ex.nome || "";
+      editExInstr.value = ex.instrucao || "";
+      editExEquip.value = ex.equipamento || "";
+      editExEnergia.value = normalizeEnergy(ex.energia);
+      editExContexto.value = normalizeContext(ex.contexto);
+      editExCategoria.value = String(ex.categoria || "outros").toLowerCase();
+
+      editExerciseModal.style.display = "flex";
+    }
+
+    function deleteExercise(day, exId){
+      const exOpt = ensureExOptionsState();
+      const list = exOpt[day] || [];
+      const idx = list.findIndex(x => x.id === exId);
+      if(idx === -1) return;
+      if(!confirm("Excluir este exercício?")) return;
+
+      list.splice(idx,1);
+
+      const ds = getExDoneState(day);
+      if(ds[exId]) delete ds[exId];
+
+      persistState();
+      renderExercises();
+    }
+
+    if(editExCancelBtn){
+      editExCancelBtn.addEventListener("click", () => {
+        editExerciseModal.style.display = "none";
+        currentExEdit = null;
+      });
+    }
+
+    if(editExSaveBtn){
+      editExSaveBtn.addEventListener("click", () => {
+        if(!currentExEdit) return;
+        const { day, exId } = currentExEdit;
+        const exOpt = ensureExOptionsState();
+        const list = exOpt[day] || [];
+        const ex = list.find(x => x.id === exId);
+        if(!ex) return;
+
+        const name = editExName.value.trim();
+        if(!name){
+          alert("Digite o nome do exercício.");
+          return;
+        }
+
+        ex.nome = name;
+        ex.instrucao = editExInstr.value.trim();
+        ex.equipamento = editExEquip.value.trim() || "Sem equipamento";
+        ex.energia = normalizeEnergy(editExEnergia.value);
+        ex.contexto = normalizeContext(editExContexto.value);
+        ex.categoria = String(editExCategoria.value || "outros").toLowerCase();
+
+        persistState();
+        editExerciseModal.style.display = "none";
+        currentExEdit = null;
+        renderExercises();
+      });
+    }
+
+    if(editExerciseModal){
+      editExerciseModal.addEventListener("click", (e) => {
+        if(e.target === editExerciseModal){
+          editExerciseModal.style.display = "none";
+          currentExEdit = null;
+        }
+      });
+    }
+
+    function renderExercises(){
+      const day = getSelectedDay();
+      const energy = getDayEnergy(day);
+      const ctx = getDayContext(day);
+      const weekday = getWeekdayLabel(day);
+
+      const ctxLabel = ctx === "casa" ? "Casa"
+                    : ctx === "find" ? "Find"
+                    : ctx === "viagem" ? "Viagem"
+                    : "Pausa";
+
+      badgeExDia.textContent = `${weekday} • Dia ${day} • ${ctxLabel} • ${energy === "alta" ? "Alta" : "Baixa"}`;
+      exContextLabel.textContent = ctx === "pausa"
+        ? "Dia de pausa: escolha apenas respiração/alongamento se quiser."
+        : "";
+
+      exerciseContent.innerHTML = "";
+
+      if(ctx === "pausa"){
+        exerciseContent.innerHTML =
+          '<div class="empty-message">Dia de pausa: sem plano rígido de exercícios. Só o que for gentil com o corpo. 💛</div>';
+        renderExerciseStats();
+        return;
+      }
+
+      const list = getExDayOptions(day)
+        .filter(ex => normalizeContext(ex.contexto) === ctx)
+        .filter(ex => normalizeEnergy(ex.energia) === energy);
+
+      if(!list.length){
+        const msg = document.createElement("div");
+        msg.className = "empty-message";
+        msg.textContent =
+          "Sem exercícios cadastrados para este dia/contexto/energia. Você pode adicionar um abaixo. 💙";
+        exerciseContent.appendChild(msg);
+      }else{
+        // agrupa por equipamento
+        const byEquip = {};
+        list.forEach(ex=>{
+          const eq = (ex.equipamento || "Sem equipamento").trim();
+          if(!byEquip[eq]) byEquip[eq] = [];
+          byEquip[eq].push(ex);
+        });
+
+        // ordena equipamento com Esteira primeiro
+        const equips = Object.keys(byEquip).sort((a,b)=>{
+          const aIs = a.toLowerCase().includes("esteira");
+          const bIs = b.toLowerCase().includes("esteira");
+          if(aIs && !bIs) return -1;
+          if(!aIs && bIs) return 1;
+          return a.localeCompare(b, "pt-BR");
+        });
+
+        const doneState = getExDoneState(day);
+
+        equips.forEach(eq=>{
+          const block = document.createElement("div");
+          block.className = "exercise-block";
+
+          const title = document.createElement("div");
+          title.className = "exercise-title";
+          title.textContent = `🧩 ${eq}`;
+
+          const meta = document.createElement("div");
+          meta.className = "exercise-meta";
+          meta.textContent = `${ctxLabel} • ${energy === "alta" ? "Versão completa" : "Versão leve"}`;
+
+          const ul = document.createElement("ul");
+ul.className = "tasks-list";
+
+          byEquip[eq].forEach(ex=>{
+            const li = document.createElement("li");
+            li.className = "exercise-item";
+
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = !!doneState[ex.id];
+            cb.onchange = () => toggleExerciseDone(day, ex.id);
+
+            const labelWrap = document.createElement("div");
+            labelWrap.style.flex = "1";
+
+            const line = document.createElement("div");
+            line.style.display = "flex";
+            line.style.alignItems = "center";
+            line.style.gap = ".25rem";
+
+            const name = document.createElement("span");
+            name.textContent = ex.nome;
+
+            const btnInfo = document.createElement("button");
+            btnInfo.type = "button";
+            btnInfo.className = "btn-icon";
+            btnInfo.textContent = ex.instrucao ? "+" : "";
+            btnInfo.title = "Ver instruções";
+
+            const btnEdit = document.createElement("button");
+            btnEdit.type = "button";
+            btnEdit.className = "btn-icon";
+            btnEdit.textContent = "✎";
+            btnEdit.title = "Editar";
+            btnEdit.onclick = () => editExercise(day, ex.id);
+
+            const btnDel = document.createElement("button");
+            btnDel.type = "button";
+            btnDel.className = "btn-icon";
+            btnDel.textContent = "🗑";
+            btnDel.title = "Excluir";
+            btnDel.onclick = () => deleteExercise(day, ex.id);
+
+            line.appendChild(name);
+            line.appendChild(btnEdit);
+            line.appendChild(btnDel);
+
+            const instr = document.createElement("div");
+            instr.className = "exercise-note";
+            instr.textContent = ex.instrucao || "";
+            instr.style.display = "none";
+
+            if(ex.instrucao){
+              btnInfo.onclick = () => {
+                const vis = instr.style.display === "block";
+                instr.style.display = vis ? "none" : "block";
+                btnInfo.textContent = vis ? "+" : "−";
+              };
+              line.insertBefore(btnInfo, btnEdit);
+            }
+
+            labelWrap.appendChild(line);
+            labelWrap.appendChild(instr);
+
+            li.appendChild(cb);
+            li.appendChild(labelWrap);
+
+            ul.appendChild(li);
+          });
+
+          block.appendChild(title);
+          block.appendChild(meta);
+          block.appendChild(ul);
+
+          exerciseContent.appendChild(block);
+        });
+      }
+
+      // Form simples de adicionar exercício
+      const addWrap = document.createElement("div");
+      addWrap.className = "meal-add-area";
+
+      const btnToggle = document.createElement("button");
+      btnToggle.type = "button";
+      btnToggle.className = "btn-small btn-outline";
+      btnToggle.textContent = "➕ Adicionar exercício";
+
+      const formDiv = document.createElement("div");
+      formDiv.style.display = "none";
+
+      const lbl = document.createElement("label");
+      lbl.textContent = "Novo exercício:";
+
+      const inName = document.createElement("input");
+      inName.placeholder = "Nome do exercício";
+
+      const inInstr = document.createElement("textarea");
+      inInstr.placeholder = "Instruções (opcional)";
+
+      const inEquip = document.createElement("input");
+      inEquip.placeholder = "Equipamento (ex.: Esteira, Tapete, Sem equipamento)";
+
+      const selEner = document.createElement("select");
+      ["alta","baixa"].forEach(v=>{
+        const o = document.createElement("option");
+        o.value = v;
+        o.textContent = v === "alta" ? "Energia alta" : "Energia baixa";
+        selEner.appendChild(o);
+      });
+      selEner.value = energy;
+
+      const selCtx = document.createElement("select");
+      ["casa","find","viagem"].forEach(v=>{
+        const o = document.createElement("option");
+        o.value = v;
+        o.textContent = v === "casa" ? "Casa" : v === "find" ? "Find" : "Viagem";
+        selCtx.appendChild(o);
+      });
+      selCtx.value = ctx === "pausa" ? "casa" : ctx;
+
+      const selCat = document.createElement("select");
+      ["forca","mobilidade","cardio","respiracao","alongamento","equilibrio","recuperacao","estabilidade","outros"]
+        .forEach(v=>{
+          const o = document.createElement("option");
+          o.value = v;
+          o.textContent = v;
+          selCat.appendChild(o);
+        });
+
+      const btnAdd = document.createElement("button");
+      btnAdd.type = "button";
+      btnAdd.className = "btn-small";
+      btnAdd.textContent = "Salvar exercício";
+
+      btnToggle.onclick = () => {
+        const vis = formDiv.style.display === "block";
+        formDiv.style.display = vis ? "none" : "block";
+      };
+
+      btnAdd.onclick = () => {
+        const nome = inName.value.trim();
+        if(!nome){ alert("Digite o nome do exercício."); return; }
+
+        addExercise(day, {
+          nome,
+          instrucao: inInstr.value.trim(),
+          equipamento: inEquip.value.trim() || "Sem equipamento",
+          energia: selEner.value,
+          contexto: selCtx.value,
+          categoria: selCat.value
+        });
+
+        inName.value = "";
+        inInstr.value = "";
+        inEquip.value = "";
+      };
+
+      formDiv.appendChild(lbl);
+      formDiv.appendChild(inName);
+      formDiv.appendChild(inInstr);
+      formDiv.appendChild(inEquip);
+      formDiv.appendChild(selEner);
+      formDiv.appendChild(selCtx);
+      formDiv.appendChild(selCat);
+      formDiv.appendChild(btnAdd);
+
+      addWrap.appendChild(btnToggle);
+      addWrap.appendChild(formDiv);
+      exerciseContent.appendChild(addWrap);
+
+      renderExerciseStats();
+    }
+
+    function computeCycleExerciseStats(exSnapshot){
+      const totalDias = 14;
+      let diasComMov = 0;
+
+      for(let d=1; d<=totalDias; d++){
+        const dayEx = exSnapshot?.[d] || exSnapshot?.[String(d)];
+        if(!dayEx) continue;
+        const any = Object.values(dayEx).some(v => !!v);
+        if(any) diasComMov++;
+      }
+
+      const perc = totalDias ? Math.round((diasComMov/totalDias)*100) : 0;
+      return { diasComMov, totalDias, percDiasMov: perc };
+    }
+
+    function renderExerciseStats() {
+  if (!exerciseStats) return;
+
+  const exDays = state.exState || {};
+  const totalDays = 14;
+
+  let diasComMov = 0;
+  let totalSessoes = 0;
+  let diasAlta = 0;
+  let diasBaixa = 0;
+
+  const cats = [
+    "forca",
+    "mobilidade",
+    "cardio",
+    "respiracao",
+    "alongamento",
+    "equilibrio",
+    "recuperacao",
+    "estabilidade",
+    "outros"
+  ];
+
+  const catsCount = {};
+  cats.forEach((c) => (catsCount[c] = 0));
+
+  const temMov = [];
+
+  for (let d = 1; d <= totalDays; d++) {
+    const dayKey = String(d);
+    const stateDay = exDays[dayKey] || {};
+    const idsFeitos = Object.keys(stateDay).filter((id) => stateDay[id]);
+
+    const hasMovement = idsFeitos.length > 0;
+    temMov.push(hasMovement);
+
+    if (hasMovement) {
+      diasComMov++;
+      totalSessoes += idsFeitos.length;
+
+      const energy = getDayEnergy(d); // "alta" ou "baixa"
+      if (energy === "alta") diasAlta++;
+      if (energy === "baixa") diasBaixa++;
+
+      const options = getExDayOptions(d);
+      idsFeitos.forEach((id) => {
+        const meta = options.find((opt) => opt.id === id);
+        const cat = meta && meta.categoria ? meta.categoria : "outros";
+        if (!catsCount[cat]) catsCount[cat] = 0;
+        catsCount[cat]++;
+      });
+    }
+  }
+
+  // Maior sequência sem exercício
+  let maxSemEx = 0;
+  let atualSemEx = 0;
+  for (let i = 0; i < temMov.length; i++) {
+    if (!temMov[i]) {
+      atualSemEx++;
+      if (atualSemEx > maxSemEx) maxSemEx = atualSemEx;
+    } else {
+      atualSemEx = 0;
+    }
+  }
+
+  const percDiasMov = Math.round((diasComMov / totalDays) * 100);
+
+// aqui:
+badgeExResumo.textContent = `${diasComMov}/${totalDays} dias com movimento (${percDiasMov}%)`;
+  const percPorCat = {};
+  cats.forEach((c) => {
+    percPorCat[c] = totalSessoes
+      ? Math.round((catsCount[c] / totalSessoes) * 100)
+      : 0;
+  });
+
+  exerciseStats.innerHTML = "";
+
+  // Bloco textual principal (como no exemplo que você deu)
+  const resumoTopo = document.createElement("div");
+  resumoTopo.className = "stats-row-vertical";
+  resumoTopo.innerHTML = `
+    <p class="mini-text">Dias com movimento: ${diasComMov}/${totalDays} (${percDiasMov}%)</p>
+    <p class="mini-text">Maior sequência sem exercício: ${maxSemEx} dia(s)</p>
+    <p class="mini-text">Versão completa (alta energia): ${diasAlta} dia(s)</p>
+    <p class="mini-text">Versão leve (baixa energia): ${diasBaixa} dia(s)</p>
+    <p class="mini-text">Total de sessões (exercícios feitos): ${totalSessoes}</p>
+  `;
+  exerciseStats.appendChild(resumoTopo);
+
+  // Barras por categoria
+  const barras = document.createElement("div");
+  barras.className = "stats-row-vertical mt-4";
+
+  const labelMap = {
+    forca: "Força",
+    mobilidade: "Mobilidade",
+    cardio: "Cardio",
+    respiracao: "Respiração",
+    alongamento: "Alongamento",
+    equilibrio: "Equilíbrio",
+    recuperacao: "Recuperação",
+    estabilidade: "Estabilidade",
+    outros: "Outros"
+  };
+
+  cats.forEach((c) => {
+    const p = percPorCat[c];
+    const n = catsCount[c];
+    const bloco = document.createElement("div");
+    bloco.innerHTML = `
+      <div class="mini-text">${labelMap[c]}: ${p}% (${n} sessão(ões))</div>
+      <div class="bar">
+        <div class="bar-fill" style="width: ${p}%;"></div>
+      </div>
+    `;
+    barras.appendChild(bloco);
+  });
+
+  exerciseStats.appendChild(barras);
+}
+
+function summarizeCategoriasForCycle() {
+  const counts = {}; // { mobilidade: 3, alongamento: 2 ... }
+  const log = state.exerciseLogByDay || {};
+
+  Object.values(log).forEach(dayArr => {
+    (dayArr || []).forEach(item => {
+      const c = item.categoria || "mobilidade";
+      counts[c] = (counts[c] || 0) + 1;
+    });
+  });
+
+  return counts;
+}
+    /* =========================
+       =========================
+       CASA
+       =========================
+    ========================= */
+
+    // Base simples e funcional (com energia + contexto!)
+    const baseDomesticByDay = {
+      1:{
+        indispensavel:[
+          {id:"d1_1",nome:"🍽 Tirar louça",instrucao:"Tirar e guardar."},
+          {id:"d1_2",nome:"🌿 Regar",instrucao:"Maranta e Antúrio (se secos)"},
+          {id:"d1_3",nome:"🧽 Trocar esponja • perfex • bate-mão • pano de prato",instrucao:"Se for necessário"},
+          {id:"d1_4",nome:"🫧 Repor essência / aromatizador",instrucao:"Encher portinhos."},
+          {id:"d1_5",nome:"🧺 Recolocar só o essencial nas superfícies",instrucao:"Em mesas e bancadas."},
+          {id:"d1_6",nome:"🍽 Louça na máquina",instrucao:"Lavar"},
+          {id:"d1_7",nome:"☕ Autocuidado",instrucao:"Descansar + beber água + alongar 2 minutos + pausa."},
+        ],
+        desejavel:[
+          {id:"d1_8",nome:"🛒 Mercado",instrucao:"Despensa – itens de base"},
+          {id:"d1_9",nome:"🛋 Trocar manta da sala",instrucao:"Se necessário."},
+          {id:"d1_10",nome:"🧊 Geladeira",instrucao:"Revisar 1 prateleira da geladeira (limpeza rápida)."},
+          {id:"d1_11",nome:"📝 Conferir freezer",instrucao:"O que entrou/saiu."},
+          {id:"d1_12",nome:"🍲 PRÉ-PREPARO ",instrucao:"🥬 Lavar e porcionar 1 tipo de verdura (ex.: rúcula ou alface) • 🥣 Separar 4–5 potinhos vazios para usar no pré-preparo do fim de semana."}
+        ]
+      },
+      2:{
+        indispensavel:[
+          {id:"d2_1",nome:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d2_2",nome:"🗑 Lixo",instrucao:"Tirar → levar → colocar saco novo."},
+          {id:"d2_3",nome:"🪴Plantas",instrucao:"Checar solo e regar só as secas."},
+          {id:"d2_4",nome:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d2_5",nome:"🔥 Fogão rápido",instrucao:"Limpeza rápida do tampo e da boca principal."},
+          {id:"d2_6",nome:"🧺 Lavanderia",instrucao:"Usar apenas se realmente precisar (reserva)."},
+          {id:"d2_7",nome:"🧹 Cesta 5 min na área de serviço",instrucao:"Guardar o que está fora do lugar, sem faxina completa."},
+          {id:"d2_8",nome:"📝 Organizar sacola de retorno",instrucao:"Lista curta do que está faltando em casa."},
+          {id:"d2_9",nome:"🥘 PRÉ-PREPARO",instrucao:"Conferir se tem os ingredientes principais • Anotar o que falta comprar."},
+          ]
+      },
+          3:{
+        indispensavel:[
+          {id:"d3_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d3_2",label:"🗑 Lixeira do banheiro",instrucao:"Tirar → levar → colocar saco novo."},
+          {id:"d3_3",label:"🛁 Espelho do banheiro." ,instrucao: "Pano rápido." },
+          {id:"d3_4",label:"👖 Tirar da corda (se houver)", instrucao:"Dobrar e guardar." },
+          {id:"d3_5",label:"🧻 Trocar pano bate-mão.", instrucao: ""},
+          {id:"d3_6",label:"🍽 Louça na máquina",instrucao:"Lavar"},
+        ],
+        desejavel:[
+          {id:"d3_7",label: "👕 Lavanderia", instrucao: "Lençol + toalha + panos de chão" },
+          {id:"d3_8",label:"♻️ Recicláveis", instrucao: "separar/organizar para descarte." },
+          {id:"d3_9",label:"📝 Triagem da inbox 10’", instrucao: "Descartar/arquivar/ação rápida." },
+          {id:"d3_10",label:"🛏 Quarto & cosméticos",
+        instrucao: "1 gaveta OU separar 5 itens para doação/descarte."
+      },
+
+          {id:"d3_10",label:"🍲 PRÉ-PREPARO PESADO – BLOCO 1",
+        instrucao: "🍗 Cozinhar frango e desfiar (2 porções para congelar) • 🥩 Refogar carne moída simples (3 porções) • 🥒 Congelar legumes: abóbora + cenoura (em cubos, porções). "}
+
+                  ]
+      },
+      4:{
+        indispensavel:[
+          {id:"d4_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d4_2",label:"🗃 Mesa de trabalho 5 min", instrucao: "organizar → passar pano." },
+          {id:"d4_3",label:"👖 Tirar da corda (se houver).", instrucao: "Dobrar e guardar" }, 
+          {id:"d4_4",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d4_5",label:"👕 Lavanderia", instrucao: "roupa do dia a dia" },
+          {id:"d4_6",label: "🚽 Banheiro manutenção", instrucao: "pia + vaso rápidos" },
+          {id:"d4_7",label:"🍲 PRÉ-PREPARO PESADO", instrucao: "🫛 Cozinhar lentilha (2 porções) • Cozinhar grão-de-bico (2 porções) • 🥣 Separar potinhos e congelar proteínas (frango, carne, lentilha/grão-de-bico)."},      
+       
+        ]
+      },
+      5:{
+        indispensavel:[
+          {id:"d5_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d5_2",label:"🌿 Regar e adubar", instrucao: "Maranta, antúrio, jibóia, dracena" },
+          {id:"d5_3",label:"🧻 Trocar pano bate-mão.", instrucao: ""},
+          {id:"d5_4",label:"🛷 Mesa de jantar", instrucao: "multiuso → pano" },
+          {id:"d5_5",label:"🤖 Rodar 2 cômodos", instrucao: "Sala + Escritório." },
+          {id:"d5_6",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d5_7",label:"👙Lavanderia", instrucao: "Roupa íntima" },
+          {id:"d5_8",label:"🤖 Rodar 4 cômodos ou completo", instrucao: " Sala + Escritório + Quarto principal + Banheiro da suíte • Completo: + passar pano no Banheiro da suíte." },
+          {id:"d5_9",label:"🧹 Área de serviço", instrucao: "Bancada A → pano  • Completo: bancada B → pano" },
+          {id:"d5_10",label:"👖 Tirar da corda (se houver)", instrucao: "dobrar/guardar" },
+          {id:"d5_11",label:"🥘 PRÉ-PREPARO", instrucao: "🍚 Cozinhar arroz para a semana • 🍳 Cozinhar frango e desfiar (2 porções) • 🥘 Refogar carne moída simples (3 porções) • 🍳 Congelar legumes: abóbora + cenoura (se tiver) • 📝 Registrar 1–2 itens no freezer/geladeira." }
+        ]
+      },
+      6:{
+        indispensavel:[
+          {id:"d6_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d6_2",label:"🚽 Pia + vaso rápido", instrucao: " desinfetante → pano/escova → descarga." },
+          {id:"d6_3",label:"🪴 Plantas", instrucao: "checar solo → regar secas" },
+          {id:"d6_4",label:"🤖 3 cômodos", instrucao: " Cozinha + Área de serviço + Corredor • + Quarto de hóspede + Banheiro social (se usados na semana)•  Completo: + passar pano no Banheiro social (se usados na semana)." },
+          {id:"d6_5",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d6_6",label: "👖 Tirar da corda (se houver)", instrucao: "Dobrar e guardar." },
+          {id:"d6_7",label:"🛁 Espelho + bancada", instrucao: "Pano úmido → seco." },
+          {id:"d6_8",label:"🗑Lixeira do banheiro", instrucao: "Tirar → levar → colocar saco novo." },
+          {id:"d6_9",label:"🛒 Hortifrut/feira", instrucao: "Compra rápida (lista curta)." },
+          {id:"d6_10",label:"🧻🧼 Repor papel e sabonete", instrucao: "" },
+           {id:"d6_11",label:"🍉 Hortifrut/feira:", instrucao: "Lavar e porcionar." },
+            {id:"d6_12",label:"🍲 PRÉ-PREPARO", instrucao: "🫧 Higienizar saladas para 3–4 dias (rúcula/alface) • 🍅 Deixar tomate e cebola picados para 2–3 dias em potinhos • 🫛Cozinhar lentilha (2 porções) • Cozinhar grão-de-bico (2 porções) • 🧊Congelar em porções pequenas."}
+        ]
+      },
+      7:{
+        indispensavel:[
+          {id:"d7_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d7_2",label:"🧻 Trocar pano bate-mão ", instrucao: ""}, 
+          {id:"d7_3",label:"🌿 Checar", instrucao: "Maranta e Dracena." }, 
+          {id:"d7_4",label:"🛋 Sala", instrucao: "Alinhar manta e almofadas " }, 
+          {id:"d7_5",label:"🪑 Mesa/rack  5 min", instrucao: "Mover tudo p inbox → pano → voltar só o essencial" }, 
+          {id:"d7_6",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d7_7",label: "👖 Tirar da corda", instrucao: "Dobrar e guardar." }, 
+          {id:"d7_8",label:"👕 Lavanderia", instrucao: "Roupa do dia a dia." }, 
+          {id:"d7_9",label:"🧺 Triagem inbox 10’ ", instrucao: "Descartar/arquivar/ação rápida." }, 
+          {id:"d7_10",label: "🔌 Organizar cabos/chargers", instrucao: ""}, 
+          {id:"d7_11",label:"🪑 Superfícies do escritório ", instrucao: "Organizar e guardar." }, ,
+          {id:"d7_12",label:"🥘PRÉ-PREPARO", instrucao: "🥘Usar o que já foi cozido  • 🥣 Montar 1–2 potinhos extras (proteína + legume) para deixar a semana mais leve."}
+        ]
+      },
+      8:{
+        indispensavel:[
+          {id:"d8_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d8_2",label:"🧽 Trocar esponja + perfex.", instrucao: ""},
+          {id:"d8_3",label:"🌵 Rega + adubo", instrucao: "Rosa do Deserto, Cacto, Suculentas, Sarcostemma (rega profunda e espaçada)"},
+          {id:"d8_4",label:"🔥 Bancada + fogão rápido.", instrucao: ""},
+          {id:"d8_5",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d2_6",label:"♻️ Recicláveis", instrucao: "Tetra Pak/PET/latas — enxaguar/achatar." },
+          {id:"d2_7",label: "🧼 Limpar robô", instrucao: "Reservatório, filtro*, escovas, sensores/contatos, rodas • *Se lavar o filtro, secar 24 h e só recolocar no dia seguinte."},
+          {id:"d2_8",label:"🛒 Mercado (despensa)", instrucao: "Guardar tudo" },
+          {id:"d2_9",label:"📝 Registrar compras", instrucao: "Atualizar a lista da despensa." },
+          {id:"d2_10",label:"🍲 PRÉ-PREPARO", instrucao: "🥓 Assar picanha suína (1 porção — usar só 1x/semana) • 🧊 Congelar em porções individuais  • Se tiver energia: 🥒 Aproveitar forno/tempo para preparar algum legume assado extra (abobrinha, brócolis) se estiver com energia • 🥦 Congelar abobrinha e brócolis (se ainda não tiver feito)." }
+        ]
+      },
+      9:{
+        indispensavel:[
+          {id:"d9_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d9_2",label:"🧻 Trocar pano bate-mão", instrucao: ""},
+          {id:"d9_3",label:" 🌿 Plantas", instrucao: "Checar solo → regar secas." },
+          {id:"d9_4",label:"🗑 Lixo", instrucao: "Tirar → levar → colocar saco novo." },
+          {id:"d9_5",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d9_6",label:"👗Lavanderia", instrucao: "Reserva (só se precisar)" },
+          {id:"d9_7",label:"🧹 Cesta 5min na área de serviço", instrucao: "Sem limpeza completa." },
+          {id:"d9_8",label:"♻️ Recicláveis ", instrucao: "Checar para levar ao ponto (se necessário)." },
+          {id:"d9_9",label: "🍲 PRÉ-PREPARO", instrucao: "Só logística: 🧐 Definir quais 2 porções do freezer serão usadas no FDS."}
+        
+        ]
+      },
+      10:{
+        indispensavel:[
+          {id:"d10_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d10_2",label:"🛷 Mesa de jantar", instrucao: "Multiuso → pano." }, 
+          {id:"d10_3",label:"🧻 Trocar pano bate-mão", instrucao: ""}, 
+          {id:"d10_4",label: "🌿Plantas", instrucao: "Checar solo → regar só as secas." }, 
+          {id:"d10_5",label:"❄️ Freezer", instrucao: " Separar 2 porções para o FDS." },
+          {id:"d10_6",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d10_7",label:"🧕 Lavanderia", instrucao: "Lençol + toalha + panos de chão " }, 
+          {id:"d10_8",label:"🍲 PRÉ-PREPARO PESADO ", instrucao: "🥔 Preparar purê de batata-doce (porções para congelar) •🥕 Congelar cenoura/abobrinha que eventualmente falte."},
+                  ]
+      },
+      11:{
+        indispensavel:[
+          {id:"d11_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d11_2",label:"🧹 Cesta 5 min ", instrucao: " Bancada A → pano  • Completo: bancada B → pano" }, 
+          {id:"d11_3",label:"♻️ Recicláveis", instrucao: "PET + latas  →  enxaguar/achatar." }, 
+          {id:"d11_4",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d11_5",label:"👕 Lavanderia", instrucao: "Roupa do dia a dia." }, 
+          {id:"d11_6",label:"🧊 Geladeira", instrucao: "1 prateleira (pano úmido)."}, 
+          {id:"d11_7",label:"🍲 PRÉ-PREPARO PESADO", instrucao: " 🥩 Revisar proteínas (frango/carne/lentilha/grão-de-bico) → completar porções se algo estiver acabando • 🥣 Separar potinhos para a segunda semana."},
+          
+        ]
+      },
+      12:{
+        indispensavel:[
+          {id:"d12_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d12_2",label:"🌿 Rega leve ", instrucao: "Maranta, antúrio, jibóia, dracena (se secos)." },
+          {id:"d12_3",label:"🧻 Trocar pano bate-mão", instrucao: ""},
+          {id:"d12_4",label:"🛷 Mesa de jantar", instrucao: " Multiuso → pano " },
+          {id:"d12_5",label: "🤖 Rodar 2 cômodos leves ", instrucao: "Sala + Escritório • Completo: + passar pano no Banheiro da suíte (se precisar)." },
+          {id:"d12_4",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d12_6",label:"👙Lavanderia", instrucao: " Roupa íntima (se tiver acumulado)" },
+          {id:"d12_7",label:"🧹 Área de serviço", instrucao: "Bancada A → pano  • Completo: bancada B → pano" },
+          {id:"d12_8",label:"👖 Tirar da corda (se houver)", instrucao: " Dobrar e guardar " },
+          {id:"d12_9",label:"📝 Registrar 1–2 itens no freezer/geladeira",  instrucao: "O que entrou/saiu • Conferir se ainda há arroz, frango e carne prontos"},
+          {id:"d12_10",label:"🧊 Geladeira", instrucao: "Organizar 1 prateleira" },
+          {id:"d12_11",label:"🍲 PRÉ-PREPARO", instrucao: "🥔 Preparar purê de batata-doce (porções) • 🥦 Fazer 1 legume rápido para repor potinhos (couve ou brócolis)." }
+          
+        ]
+      },
+      13:{
+        indispensavel:[
+          {id:"d13_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d13_2",label:"🧻 Trocar pano bate-mão", instrucao: ""},  
+          {id:"d13_3",label:"🧺 Catar roupas", instrucao: "Sujas → cesto • Limpas → guardar" }, 
+           {id:"d13_4",label:"💄 Cosméticos 5 min", instrucao: "Descartar vazios → limpar tampo → agrupar (manhã/noite/cabelo)." }, 
+          {id:"d13_5",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d13_6",label:"🛒 Mercado (hortifrut)", instrucao: ""}, 
+          {id:"d13_7",label:"🤖 2 cômodos ", instrucao: "Os mais pisados da semana, ex.: Sala + Corredor) " }, 
+          {id:"d13_8",label:"🍉 Hortifrut/feira", instrucao: "Lavar/porcionar" },  
+          {id:"d13_9",label:"📝 1 gaveta do armário", instrucao: "Organizar OU separar 5 itens para doação." }, 
+          {id:"d13_10",label: "🍲  PRÉ-PREPARO", instrucao: "🫧 Higienizar saladas para os próximos 3–4 dias • 🍅 Deixar tomate e cebola picados para 2–3 dias." }
+        ]
+      },
+      14:{
+        indispensavel:[
+          {id:"d14_1",label:"🍽 Tirar louça",instrucao:"Tirar e guardar"},
+          {id:"d14_2",label:"🌿 Regar Zamioculca", instrucao: "Regar • Adubar na 1º semana de cada mês." },
+          {id:"d14_3",label:"🌵 Checar suculenta", instrucao: "Suculentas, cacto e rosa do deserto." },
+          {id:"d14_4",label:"🧹 Regra da Cesta 5 min", instrucao: " Liberar mesa, pia e bancadas." },
+          {id:"d14_5",label:"🛏 Roupas de cama • toalha • pano de chão: ", instrucao: " Separar para troca." },
+          {id:"d14_6",label:"🧹 Confirmar material de limpeza ", instrucao: " Sprays desembala: multiuso, desinfetante, desengordurante." },
+          {id:"d14_7",label:"🍽 Louça na máquina",instrucao:"Lavar"}
+        ],
+        desejavel:[
+          {id:"d14_8",label:"🗑Lixo", instrucao: "Levar → colocar saco novo." },
+          {id:"d14_9",label:"📝 Nota de compras curta", instrucao: "Pós-faxina." },
+          {id:"d14_10",label:"🍲 PRÉ-PREPARO",   instrucao: "📝 Conferir o que ainda tem de proteínas/legumes prontos • 📝 Anotar no bloco de notas o que funcionou bem e o que sobrou (para ajustar o pré-preparo da próxima quinzena)." }
+         
+        ]
+      }
+    };
+
+    function getDomesticDoneMap(day){
+      if(!state.domesticDone[day]) state.domesticDone[day] = {};
+      return state.domesticDone[day];
+    }
+    function getDomesticIgnoredMap(day){
+      if(!state.domesticIgnored[day]) state.domesticIgnored[day] = {};
+      return state.domesticIgnored[day];
+    }
+    function getDomesticReagMap(day){
+      if(!state.domesticReagendado[day]) state.domesticReagendado[day] = {};
+      return state.domesticReagendado[day];
+    }
+
+    function getDomesticCustomDay(day){
+      if(!state.domesticCustom[day]){
+        state.domesticCustom[day] = { indispensavel:[], desejavel:[] };
+      }
+      return state.domesticCustom[day];
+    }
+
+    function getDomesticDayList(day){
+      const base = baseDomesticByDay[day] || { indispensavel:[], desejavel:[] };
+      const custom = getDomesticCustomDay(day);
+      return {
+        indispensavel: [...(base.indispensavel||[]), ...(custom.indispensavel||[])],
+        desejavel: [...(base.desejavel||[]), ...(custom.desejavel||[])]
+      };
+    }
+
+    function isTaskVisibleForFilters(task, energy, ctx){
+      const energias = task.energias || ["alta","baixa"];
+      const contextos = (task.contextos || ["casa"]).map(normalizeContext);
+
+      const energyOk = energias.includes(energy) || energias.includes("ambas");
+      const ctxOk = contextos.includes(ctx) || contextos.includes("todos");
+      return energyOk && ctxOk;
+    }
+
+    function toggleDomesticDone(day, taskId){
+      const dm = getDomesticDoneMap(day);
+      dm[taskId] = !dm[taskId];
+      persistState();
+      renderDomestic();
+    }
+
+    function toggleDomesticIgnored(day, taskId){
+      const im = getDomesticIgnoredMap(day);
+      im[taskId] = !im[taskId];
+      persistState();
+      renderDomestic();
+    }
+
+    function reagendarTask(day, task, tipo){
+      const rm = getDomesticReagMap(day);
+      rm[task.id] = true;
+
+      state.flexList.push({
+        id: `flex_${Date.now()}`,
+        originalId: task.id,
+        name: task.nome,
+        instrucao: task.instrucao || "",
+        tipo: tipo || "indispensavel",
+        fromDay: day
+      });
+
+      persistState();
+      renderDomestic();
+    }
+
+    function addDomesticTask(day, tipo, nome, instrucao, energias, contextos){
+      const customDay = getDomesticCustomDay(day);
+      const id = `d${day}_custom_${Date.now()}`;
+      const t = {
+        id,
+        nome,
+        instrucao: instrucao || "",
+        energias: energias && energias.length ? energias : ["alta","baixa"],
+        contextos: contextos && contextos.length ? contextos : ["casa"]
+      };
+      if(!customDay[tipo]) customDay[tipo] = [];
+      customDay[tipo].push(t);
+      persistState();
+      renderDomestic();
+    }
+
+    function openEditTaskModal(day, task, tipo, source){
+      currentEditTask = { day, taskId: task.id, source: source || "mixed" };
+
+      editTaskName.value = task.nome || "";
+      editTaskInstr.value = task.instrucao || "";
+      editTaskTipo.value = tipo || "indispensavel";
+
+      editTaskModal.style.display = "flex";
+    }
+
+    function findTaskInDay(day, taskId){
+      const lists = getDomesticDayList(day);
+      const all = [
+        ...(lists.indispensavel||[]).map(t=>({t, tipo:"indispensavel"})),
+        ...(lists.desejavel||[]).map(t=>({t, tipo:"desejavel"}))
+      ];
+      return all.find(x => x.t.id === taskId) || null;
+    }
+
+    if(editTaskCancelBtn){
+      editTaskCancelBtn.addEventListener("click", () => {
+        editTaskModal.style.display = "none";
+        currentEditTask = null;
+      });
+    }
+
+    if(editTaskSaveBtn){
+      editTaskSaveBtn.addEventListener("click", () => {
+        if(!currentEditTask) return;
+
+        const day = currentEditTask.day;
+        const found = findTaskInDay(day, currentEditTask.taskId);
+        if(!found) return;
+
+        const newName = editTaskName.value.trim();
+        if(!newName){
+          alert("Digite o nome da tarefa.");
+          return;
+        }
+
+        const newInstr = editTaskInstr.value.trim();
+        const newTipo = editTaskTipo.value;
+
+        // Só editamos a versão "custom" se existir; caso seja base, clonamos para custom e marcamos base como deletada
+        const customDay = getDomesticCustomDay(day);
+
+        function upsertCustom(tipo, baseTask){
+          if(!customDay[tipo]) customDay[tipo] = [];
+          const idx = customDay[tipo].findIndex(x => x.id === baseTask.id);
+          if(idx === -1){
+            customDay[tipo].push(Object.assign({}, baseTask));
+            return customDay[tipo].length - 1;
+          }
+          return idx;
+        }
+
+        const baseLists = baseDomesticByDay[day] || { indispensavel:[], desejavel:[] };
+        const isBase =
+          (baseLists.indispensavel||[]).some(x=>x.id===found.t.id) ||
+          (baseLists.desejavel||[]).some(x=>x.id===found.t.id);
+
+        if(isBase){
+          // marca como deletada na base e recria como custom
+          if(!state.domesticDeleted[day]) state.domesticDeleted[day] = {};
+          state.domesticDeleted[day][found.t.id] = true;
+
+          const clone = Object.assign({}, found.t);
+          clone.nome = newName;
+          clone.instrucao = newInstr;
+
+          // remove se existir em custom antigo
+          ["indispensavel","desejavel"].forEach(tp=>{
+            customDay[tp] = (customDay[tp]||[]).filter(x => x.id !== found.t.id);
+          });
+
+          upsertCustom(newTipo, clone);
+        }else{
+          // é custom
+          ["indispensavel","desejavel"].forEach(tp=>{
+            const idx = (customDay[tp]||[]).findIndex(x => x.id === found.t.id);
+            if(idx !== -1){
+              const obj = customDay[tp][idx];
+              obj.nome = newName;
+              obj.instrucao = newInstr;
+              if(tp !== newTipo){
+                customDay[tp].splice(idx,1);
+                if(!customDay[newTipo]) customDay[newTipo] = [];
+                customDay[newTipo].push(obj);
+              }
+            }
+          });
+        }
+
+        persistState();
+        editTaskModal.style.display = "none";
+        currentEditTask = null;
+        renderDomestic();
+      });
+    }
+
+    if(editTaskModal){
+      editTaskModal.addEventListener("click", (e)=>{
+        if(e.target === editTaskModal){
+          editTaskModal.style.display = "none";
+          currentEditTask = null;
+        }
+      });
+    
+ function renderCasaStats() {
+  if (!casaStatsContent) return;
+
+  let totalAtividades = 0;
+  let feitas = 0;
+
+  let indTotal = 0;
+  let indFeitas = 0;
+
+  let desTotal = 0;
+  let desFeitas = 0;
+
+  // percorre o ciclo inteiro
+  for (let day = 1; day <= 14; day++) {
+    const ctx = normalizeContext(state.dayMeta?.[day] || "casa");
+    const energy = normalizeEnergy(state.energyMeta?.[day] || "alta");
+
+    const lists = getDomesticDayList(day);
+    const dm = getDomesticDoneMap(day);
+    const im = getDomesticIgnoredMap(day);
+    const del = (state.domesticDeleted && state.domesticDeleted[day]) ? state.domesticDeleted[day] : {};
+
+    ["indispensavel", "desejavel"].forEach((tipo) => {
+      const arr = lists[tipo] || [];
+      arr.forEach((task) => {
+        if (!task || !task.id) return;
+
+        // não conta se foi deletada
+        if (del && del[task.id]) return;
+
+        // só conta o que é visível no DIA (energia + contexto)
+        if (!isTaskVisibleForFilters(task, energy, ctx)) return;
+
+        // não conta se foi marcada como "não faz sentido hoje"
+        if (im && im[task.id]) return;
+
+        totalAtividades++;
+        const isDone = !!(dm && dm[task.id]);
+        if (isDone) feitas++;
+
+        if (tipo === "indispensavel") {
+          indTotal++;
+          if (isDone) indFeitas++;
+        } else {
+          desTotal++;
+          if (isDone) desFeitas++;
+        }
+      });
+    });
+  }
+
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+  const pctTotal = pct(feitas, totalAtividades);
+  const pctInd = pct(indFeitas, indTotal);
+  const pctDes = pct(desFeitas, desTotal);
+
+  casaStatsContent.innerHTML = `
+    <div class="mini-text">Atividades concluídas: ${feitas}/${totalAtividades} (${pctTotal}%)</div>
+    <div class="bar"><div class="bar-fill" style="width:${pctTotal}%;"></div></div>
+
+    <div class="mt-2 mini-text">Indispensáveis concluídas: ${indFeitas}/${indTotal} (${pctInd}%)</div>
+    <div class="bar"><div class="bar-fill" style="width:${pctInd}%;"></div></div>
+
+    <div class="mt-2 mini-text">Desejáveis concluídas: ${desFeitas}/${desTotal} (${pctDes}%)</div>
+    <div class="bar"><div class="bar-fill" style="width:${pctDes}%;"></div></div>
+
+    <div class="mt-2 mini-muted">
+      Base: ciclo de 14 dias (conta só o que é visível em cada dia: energia + contexto; exclui ignoradas e deletadas).
+    </div>
+  `;
+}
+ 
+ 
+function renderDomestic() {
+  const day = getSelectedDay();
+  const energy = getDayEnergy(day);
+  const ctx = getDayContext(day);
+  const weekday = getWeekdayLabel(day);
+
+  const ctxLabel =
+    ctx === "casa" ? "Casa" :
+    ctx === "find" ? "Find" :
+    ctx === "viagem" ? "Viagem" :
+    "Pausa";
+
+  badgeCasaDia.textContent =
+    `${weekday} • Dia ${day} • ${ctxLabel} • ${energy === "alta" ? "Alta" : "Baixa"}`;
+
+  casaContextLabel.textContent =
+    ctx === "pausa"
+      ? "Pausa: sem cobrança doméstica hoje. 💛"
+      : "";
+
+  domesticContent.innerHTML = "";
+
+  // PAUSA: nenhuma tarefa
+  if (ctx === "pausa") {
+    domesticContent.innerHTML =
+      '<div class="empty-message">Se fizer algo, que seja mínimo e gentil. 💛</div>';
+    renderFlex();
+   renderCasaStats(); renderCycleHistoryBlock();
+    return;
+  
+  }
+
+  // VIAGEM: nenhuma tarefa doméstica
+  if (ctx === "viagem") {
+    domesticContent.innerHTML =
+      '<div class="empty-message">Dia de viagem: nenhuma tarefa doméstica obrigatória. Foque em descansar e chegar bem. 🧳</div>';
+    renderFlex();
+    
+   renderCasaStats(); renderCycleHistoryBlock();
+    return;
+  }
+
+  const lists   = getDomesticDayList(day);
+  const doneMap = getDomesticDoneMap(day);
+  const ignMap  = getDomesticIgnoredMap(day);
+  const reagMap = getDomesticReagMap(day);
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "tasks-wrapper";
+
+  function renderTipo(tipoKey, titleEmoji, titleText) {
+    const bloco = document.createElement("div");
+    bloco.style.marginBottom = "0.6rem";
+
+    const header = document.createElement("div");
+    header.className = "mini-header-row";
+    header.innerHTML = `<strong>${titleEmoji} ${titleText}</strong>`;
+    bloco.appendChild(header);
+
+    const ul = document.createElement("ul");
+    ul.className = "tasks-ul";
+    // sem bullets
+    ul.style.listStyle = "none";
+    ul.style.paddingLeft = "0";
+    ul.style.margin = "0";
+
+    const fullArr = lists[tipoKey] || [];
+    let arr = [];
+
+ // MODO FIND: lista fixa (não depende dos nomes do dia)
+if (ctx === "find") {
+  if (tipoKey === "indispensavel") {
+    arr = [
+      { id: "find_forrar_cama", nome: "Forrar cama", instrucao: "" }
+    ];
+  } else if (tipoKey === "desejavel") {
+    // só entra se energia alta
+    if (energy === "alta") {
+      arr = [
+        { id: "find_lixo_banheiro", nome: "Tirar lixo do banheiro", instrucao: "" },
+        { id: "find_varrer_qb", nome: "Varrer quarto/banheiro", instrucao: "" }
+      ];
+    } else {
+      arr = [];
+    }
+  } else {
+    arr = [];
+  }
+} else {
+  // Modos normais
+  arr = fullArr.filter((task) => isTaskVisibleForFilters(task, energy, ctx));
+}
+
+    if (!arr.length) {
+      const liEmpty = document.createElement("li");
+      liEmpty.className = "tasks-item";
+      liEmpty.textContent = "— nenhum item configurado —";
+      ul.appendChild(liEmpty);
+    } else {
+      arr.forEach((task) => {
+        const done = !!doneMap[task.id];
+        const ignore = !!ignMap[task.id];
+        const reag = !!reagMap[task.id];
+
+        const li = document.createElement("li");
+        li.className = "tasks-item";
+
+        const line = document.createElement("div");
+        line.className = "tasks-line";
+
+        // ESQUERDA: checkbox + nome
+        const left = document.createElement("div");
+        left.style.display = "flex";
+        left.style.alignItems = "center";
+        left.style.gap = "0.35rem";
+
+        const chk = document.createElement("input");
+        chk.type = "checkbox";
+        chk.checked = done;
+        chk.disabled = ignore;
+        chk.addEventListener("change", () => {
+  if (ignore) return;
+  const dm = getDomesticDoneMap(day);
+  dm[task.id] = chk.checked;
+  persistState();
+  renderDomestic(); // <- isso faz a UI e o resumo atualizarem imediatamente
+});
+        const label = document.createElement("span");
+        label.textContent = task.nome || task.label || "";
+        if (ignore) {
+          label.style.textDecoration = "line-through";
+          label.style.opacity = "0.5";
+        } else if (done) {
+          label.style.textDecoration = "line-through";
+        }
+        if (reag) {
+          label.style.fontStyle = "italic";
+        }
+
+        left.appendChild(chk);
+        left.appendChild(label);
+
+        // INSTRUÇÕES (SANFONA)
+        const instrText = task.instrucao || "";
+        let instrDiv = null;
+        if (instrText) {
+          instrDiv = document.createElement("div");
+          instrDiv.className = "task-extra";
+          instrDiv.textContent = instrText;
+          instrDiv.style.display = "none";
+        }
+
+        // DIREITA: botões +, ✏️, ⊘, ↺
+        const right = document.createElement("div");
+        right.style.display = "flex";
+        right.style.alignItems = "center";
+        right.style.gap = "0.25rem";
+        right.style.marginLeft = "auto";
+
+        // Só mostra o + se houver instruções
+        if (instrText) {
+          const btnInfo = document.createElement("button");
+          btnInfo.type = "button";
+          btnInfo.className = "btn-icon";
+          btnInfo.textContent = "+";
+          btnInfo.title = "Ver instruções";
+
+          btnInfo.addEventListener("click", () => {
+            const visivel = instrDiv.style.display === "block";
+            instrDiv.style.display = visivel ? "none" : "block";
+            btnInfo.textContent = visivel ? "+" : "–";
+          });
+
+          right.appendChild(btnInfo);
+        }
+
+        // ✏️ editar
+        const btnEdit = document.createElement("button");
+        btnEdit.type = "button";
+        btnEdit.className = "btn-icon";
+        btnEdit.textContent = "✏️";
+        btnEdit.title = "Editar tarefa";
+        btnEdit.addEventListener("click", () => {
+          openEditTaskModal(day, task, tipoKey, "base");
+        });
+        right.appendChild(btnEdit);
+
+        // ⊘ não faz sentido hoje
+        const btnIgnore = document.createElement("button");
+        btnIgnore.type = "button";
+        btnIgnore.className = "btn-icon";
+        btnIgnore.textContent = "⊘";
+        btnIgnore.title = "Não faz sentido hoje";
+        btnIgnore.addEventListener("click", () => {
+          toggleDomesticIgnored(day, task.id);
+        });
+        right.appendChild(btnIgnore);
+
+        // ↺ reagendar
+        const btnReag = document.createElement("button");
+        btnReag.type = "button";
+        btnReag.className = "btn-icon";
+        btnReag.textContent = "↺";
+        btnReag.title = "Reagendar";
+        btnReag.addEventListener("click", () => {
+          reagendarTask(day, task, tipoKey);
+        });
+        right.appendChild(btnReag);
+
+        line.appendChild(left);
+        line.appendChild(right);
+
+        li.appendChild(line);
+        if (instrDiv) {
+          li.appendChild(instrDiv);
+        }
+
+        ul.appendChild(li);
+      });
+    }
+
+    bloco.appendChild(ul);
+    wrapper.appendChild(bloco);
+  }
+
+  // Renderiza blocos de Indispensáveis e Desejáveis
+  renderTipo("indispensavel", "✅", "Indispensáveis");
+  renderTipo("desejavel", "✨", "Desejáveis");
+
+  domesticContent.appendChild(wrapper);
+
+// Atualiza reagendadas + estatísticas
+renderFlex();
+renderCasaStats();          // <- FALTAVA ISSO (o resumo da Casa)
+renderCycleHistoryBlock();
+}
+  
+
+
+    function renderFlex() {
+  if (!flexContent) return;
+  flexContent.innerHTML = "";
+
+  const list = state.flexList || [];
+  const count = list.length;
+
+  if (badgeFlexCount) {
+    badgeFlexCount.textContent = `${count} tarefa(s)`;
+  }
+
+  if (!count) {
+    const p = document.createElement("p");
+    p.className = "mini-text";
+    p.textContent = "Nenhuma tarefa reagendada no momento.";
+    flexContent.appendChild(p);
+    return;
+  }
+
+  list.forEach((item, index) => {
+    const li = document.createElement("div");
+    li.className = "tasks-item";
+
+    const line = document.createElement("div");
+    line.className = "tasks-line";
+
+    // Esquerda: checkbox + texto
+    const left = document.createElement("div");
+    left.style.display = "flex";
+    left.style.alignItems = "center";
+    left.style.gap = "0.35rem";
+    left.style.flex = "1";
+
+    const chk = document.createElement("input");
+    chk.type = "checkbox";
+    chk.checked = !!item.done;
+    chk.addEventListener("change", () => {
+      // Ao marcar como feita, a tarefa deve desaparecer da lista e entrar na estatística (no dia original, se houver)
+      if (!chk.checked) {
+        item.done = false;
+        persistState();
+        renderFlex();
+        return;
+      }
+
+      if (item.fromDay && item.originalId) {
+        const dm = getDomesticDoneMap(item.fromDay);
+        dm[item.originalId] = true;
+
+        const rm = getDomesticReagMap(item.fromDay);
+        if (rm) delete rm[item.originalId];
+      }
+
+      const listNow = state.flexList || [];
+      const idxNow = listNow.findIndex(x => x.id === item.id);
+      if (idxNow > -1) listNow.splice(idxNow, 1);
+      state.flexList = listNow;
+
+      persistState();
+      renderFlex();
+      renderDomestic();
+      
+    });
+
+    const label = document.createElement("span");
+label.textContent = item.name || item.nome || "Tarefa reagendada";
+    
+    if (item.done) {
+      label.style.textDecoration = "line-through";
+      label.style.opacity = "0.7";
+    }
+
+    left.appendChild(chk);
+    left.appendChild(label);
+
+    // Direita: botão remover
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.alignItems = "center";
+    actions.style.gap = "0.25rem";
+
+    const btnDel = document.createElement("button");
+    btnDel.type = "button";
+    btnDel.className = "btn-icon";
+    btnDel.textContent = "🚫";
+    btnDel.title = "Remover da lista";
+    
+    btnDel.onclick = () => {
+  // Remove da lista e libera para voltar ao dia original (se existir)
+  if (item.fromDay && item.originalId) {
+    const rm = getDomesticReagMap(item.fromDay);
+    if (rm) delete rm[item.originalId];
+  }
+
+  list.splice(index, 1);
+  state.flexList = list;
+  persistState();
+  renderFlex();
+  renderDomestic();
+  
+};
+
+    actions.appendChild(btnDel);
+
+    line.appendChild(left);
+    line.appendChild(actions);
+    li.appendChild(line);
+
+    flexContent.appendChild(li);
+  });
+}
+}
+
+
+if (btnClearFlex) {
+        btnClearFlex.addEventListener("click", () => {
+          const list = state.flexList || [];
+          if (!list.length) return;
+
+          const ok = confirm("Limpar a lista de reagendadas?");
+          if (!ok) return;
+
+          // Libera tarefas para voltarem ao dia original
+          list.forEach((it) => {
+            if (it && it.fromDay && it.originalId) {
+              const rm = getDomesticReagMap(it.fromDay);
+              if (rm) delete rm[it.originalId];
+            }
+          });
+
+          state.flexList = [];
+          persistState();
+          renderFlex();
+          renderDomestic();
+          
+        });
+      }
+
+    /* =========================
+       =========================
+       HISTÓRICO DE CICLOS
+       =========================
+    ========================= */
+
+  function ensureFoodOptionsState(){
+  // Stub para não quebrar o histórico quando a aba Alimentação não existe
+  return {
+    cafe: {}, lancheManha: {}, almoco: {},
+    lancheTarde: {}, jantar: {}, ceia: {}
+  };
+}
+    function computeCycleFoodStats(foodStateSnapshot, dayMetaSnapshot){
+      const optionsState = ensureFoodOptionsState();
+      const mealOrder = ["cafe","lancheManha","almoco","lancheTarde","jantar","ceia"];
+
+      let dentro=0, pulado=0, naoCumpri=0, total=0;
+
+      for(let d=1; d<=14; d++){
+        const ctxRaw =
+          (dayMetaSnapshot && (dayMetaSnapshot[d] || dayMetaSnapshot[String(d)])) || "casa";
+        const ctx = normalizeContext(ctxRaw);
+
+        if(ctx === "pausa") continue;
+
+        const dayMeals = foodStateSnapshot?.[d] || foodStateSnapshot?.[String(d)];
+        if(!dayMeals?.meals) continue;
+
+        mealOrder.forEach(mealKey=>{
+          const cfg = optionsState[mealKey];
+          if(!cfg) return;
+
+          const mealState = dayMeals.meals[mealKey];
+          if(!mealState) return;
+
+          if(mealState.skip){ pulado++; total++; return; }
+          if(mealState.notFollow){ naoCumpri++; total++; return; }
+
+          const opts = mealState.options || {};
+          const anyChecked = Object.values(opts).some(v => v?.checked);
+          if(!anyChecked) return;
+
+          dentro++; total++;
+        });
+      }
+
+      const percDentro = total ? Math.round((dentro/total)*100) : 0;
+      const percPulado = total ? Math.round((pulado/total)*100) : 0;
+      const percNao    = total ? Math.round((naoCumpri/total)*100) : 0;
+
+      return { dentro, pulado, naoCumpri, total, percDentro, percPulado, percNao };
+    }
+
+    function renderCycleHistoryBlock(){
+      if(!cycleHistoryContent) return;
+
+      const hist = state.cycleHistory || [];
+      cycleHistoryContent.innerHTML = "";
+
+      if(!hist.length){
+        cycleHistoryContent.innerHTML =
+          '<div class="empty-message">Ainda não há ciclos encerrados. Quando você usar "Reiniciar ciclo", o resumo do ciclo atual aparece aqui. 💾</div>';
+        return;
+      }
+
+      const list = hist.slice().reverse();
+
+      list.forEach((snap, idx)=>{
+        const numeroCiclo = hist.length - idx;
+        const when = snap.timestamp ? new Date(snap.timestamp) : null;
+        const whenLabel = when
+          ? when.toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" })
+          : "data desconhecida";
+
+        const foodStatsCalc = computeCycleFoodStats(
+          snap.foodState || {}, snap.dayMeta || {}
+        );
+        const exStatsCalc = computeCycleExerciseStats(snap.exState || {});
+
+        const wrap = document.createElement("div");
+        wrap.className = "meal-card";
+
+        wrap.innerHTML = `
+          <div class="flex-between">
+            <div>
+              <div class="section-title">
+                <span class="icon">📅</span>
+                <span>Ciclo ${numeroCiclo}</span>
+              </div>
+              <div class="mini-text">Encerrado em ${whenLabel}</div>
+            </div>
+          </div>
+          <div class="stats-row" style="margin-top:.35rem;">
+            <span class="stats-chip">
+              Refeições dentro: ${foodStatsCalc.dentro}/${foodStatsCalc.total} (${foodStatsCalc.percDentro}%)
+            </span>
+            <span class="stats-chip">
+              Puladas: ${foodStatsCalc.pulado} (${foodStatsCalc.percPulado}%)
+            </span>
+            <span class="stats-chip">
+              Não segui: ${foodStatsCalc.naoCumpri} (${foodStatsCalc.percNao}%)
+            </span>
+          </div>
+          <div class="stats-row" style="margin-top:.25rem;">
+            <span class="stats-chip">
+              Dias com movimento: ${exStatsCalc.diasComMov}/${exStatsCalc.totalDias} (${exStatsCalc.percDiasMov}%)
+            </span>
+          </div>
+        `;
+
+        cycleHistoryContent.appendChild(wrap);
+      });
+    }
+
+    function restartCycle(){
+      const ok = confirm(
+        "Reiniciar ciclo de 14 dias?\n\n" +
+        "• O ciclo atual será arquivado no histórico.\n" +
+        "• As marcações de alimentação, exercícios e casa serão limpas.\n" +
+        "• As opções personalizadas serão mantidas."
+      );
+      if(!ok) return;
+
+      if(!state.cycleHistory) state.cycleHistory = [];
+
+      const snapshot = {
+        timestamp: new Date().toISOString(),
+        dayMeta: deepClone(state.dayMeta),
+        energyMeta: deepClone(state.energyMeta),
+        foodState: deepClone(state.foodState),
+        exState: deepClone(state.exState),
+        domesticDone: deepClone(state.domesticDone),
+        domesticIgnored: deepClone(state.domesticIgnored),
+        domesticReagendado: deepClone(state.domesticReagendado),
+        flexHistory: deepClone(state.flexHistory)
+      };
+
+      state.cycleHistory.push(snapshot);
+
+      // limpa dados do ciclo
+      state.dayMeta = {};
+      state.energyMeta = {};
+      state.foodState = {};
+      state.exState = {};
+      state.domesticDone = {};
+      state.domesticIgnored = {};
+      state.domesticReagendado = {};
+      state.flexList = [];
+      state.flexHistory = [];
+      state.selectedDay = 1;
+
+      // reconfigura defaults visuais
+      for(let d=1; d<=14; d++){
+        state.dayMeta[d] = "casa";
+        state.energyMeta[d] = "alta";
+      }
+
+      persistState();
+
+      buildDaySelect();
+      daySelect.value = "1";
+      syncHeaderChips();
+      renderAll();
+    }
+
+function downloadHistory() {
+  try {
+    const data = {
+      exportedAt: new Date().toISOString(),
+      app: "Rotina 14 Dias — Fibro",
+      history: state.cycleHistory || [],
+      // opcional: exportar também o estado atual
+      currentState: state
+    };
+
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `historico-rotina-fibro-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert("Não consegui baixar o histórico. Se puder, me diga o erro do console.");
+    console.error(e);
+  }
+}
+
+function downloadTextFile(filename, text) {
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+}
+
+function downloadExResumo14DiasTxt() {
+  try {
+    const e = computeCycleExerciseStats(state.exState || {});
+    const now = new Date();
+
+    const lines = [];
+    lines.push("Resumo (Exercícios) — ciclo 14 dias");
+    lines.push(`Gerado em: ${now.toLocaleDateString("pt-BR")} ${now.toLocaleTimeString("pt-BR")}`);
+    lines.push("");
+    lines.push(`Dias com movimento: ${e.diasComMov}/${e.totalDias} (${e.percDiasMov}%)`);
+    lines.push(`Maior sequência sem exercício: ${e.maiorSeqSem || 0}`);
+    lines.push(`Versão completa (alta energia): ${e.sessoesAlta || 0}`);
+    lines.push(`Versão leve (baixa energia): ${e.sessoesBaixa || 0}`);
+    lines.push(`Total de sessões: ${e.totalSessoes || 0}`);
+    lines.push("");
+
+    downloadTextFile(
+      `resumo-exercicios-14dias-${new Date().toISOString().slice(0,10)}.txt`,
+      lines.join("\n")
+    );
+  } catch (err) {
+    console.error(err);
+    alert("Não consegui baixar o resumo (14 dias). Se puder, me diga o erro do console.");
+  }
+}
+
+// liga o botão
+if (btnDownloadExResumo) {
+  btnDownloadExResumo.addEventListener("click", downloadExResumo14DiasTxt);
+}
+
+
+    
+function restoreHistoryFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const text = String(reader.result || "");
+      const data = JSON.parse(text);
+
+      // formatos aceitos:
+      // 1) { history: [...], currentState: {...} }
+      // 2) { currentState: {...} }
+      // 3) { state: {...} } (fallback)
+      const incomingState = data.currentState || data.state || null;
+
+      const ok = confirm(
+        "Restaurar backup vai substituir os dados atuais deste app neste aparelho.\n\n" +
+        "Quer continuar?"
+      );
+      if (!ok) return;
+
+      if (incomingState && typeof incomingState === "object") {
+        // Mantém defaults do app caso o backup esteja incompleto
+        state = Object.assign({}, state, incomingState);
+
+        // histórico pode vir fora do estado também
+        if (Array.isArray(data.history)) state.cycleHistory = data.history;
+      } else if (Array.isArray(data.history)) {
+        state.cycleHistory = data.history;
+      } else {
+        alert("Backup inválido: não encontrei 'currentState' nem 'history'.");
+        return;
+      }
+
+      // saneamentos mínimos
+      if (!Array.isArray(state.cycleHistory)) state.cycleHistory = [];
+      if (typeof state.currentDayIndex !== "number") state.currentDayIndex = 0;
+
+      persistState();
+      // re-render geral
+      if (typeof renderAll === "function") renderAll();
+      if (typeof renderCycleHistory === "function") renderCycleHistory();
+      if (typeof renderCycleHistoryModal === "function") renderCycleHistoryModal();
+
+      alert("Backup restaurado com sucesso ✅");
+    } catch (err) {
+      console.error(err);
+      alert("Não consegui restaurar. Verifique se você selecionou um arquivo .json gerado pelo botão Backup.");
+    } finally {
+      // permite selecionar o mesmo arquivo novamente
+      if (restoreFileInput) restoreFileInput.value = "";
+    }
+  };
+  reader.readAsText(file);
+}
+
+// liga o botão Restaurar
+if (btnRestoreHistory && restoreFileInput) {
+  btnRestoreHistory.addEventListener("click", () => restoreFileInput.click());
+  restoreFileInput.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) restoreHistoryFromFile(file);
+  });
+}
+
+
+function downloadCycleHistoryTxt(){
+      const hist = state.cycleHistory || [];
+      if(!hist.length){
+        alert("Ainda não há ciclos encerrados para baixar.");
+        return;
+      }
+
+      const lines = [];
+      const now = new Date();
+      lines.push("Histórico de ciclos – Rotina Fibro");
+      lines.push(`Arquivo gerado em: ${now.toLocaleDateString("pt-BR")} ${now.toLocaleTimeString("pt-BR")}`);
+      lines.push("");
+
+      hist.forEach((snap, i)=>{
+        const num = i + 1;
+        const when = snap.timestamp ? new Date(snap.timestamp) : null;
+        const whenLabel = when
+          ? when.toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" })
+          : "(sem data registrada)";
+
+        const f = computeCycleFoodStats(snap.foodState || {}, snap.dayMeta || {});
+        const e = computeCycleExerciseStats(snap.exState || {});
+
+        lines.push(`===== Ciclo ${num} =====`);
+        lines.push(`Encerrado em: ${whenLabel}`);
+        lines.push(`Alimentação: ${f.dentro}/${f.total} dentro do combinado (${f.percDentro}%)`);
+        lines.push(`  • Puladas: ${f.pulado} (${f.percPulado}%)`);
+        lines.push(`  • Não segui: ${f.naoCumpri} (${f.percNao}%)`);
+        lines.push(`Exercícios: ${e.diasComMov}/${e.totalDias} dias com movimento (${e.percDiasMov}%)`);
+        lines.push("");
+      });
+
+      const blob = new Blob([lines.join("\n")], {type:"text/plain;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "historico_ciclos_rotina_fibro.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    if(btnRestartCycle){
+      btnRestartCycle.addEventListener("click", restartCycle);
+    }
+    if(btnDownloadCycleHistory){
+      btnDownloadCycleHistory.addEventListener("click", downloadCycleHistoryTxt);
+    }
+
+    /* =========================
+       RENDER GERAL
+    ========================= */
+    function renderAll() {
+  renderExercises();
+  renderDomestic();
+  renderCasaStats();
+  renderCycleHistoryBlock();
+}
+
+    /* =========================
+       BOOT
+    ========================= */
+    (function init(){
+      // Defaults iniciais
+      for(let d=1; d<=14; d++){
+        if(!state.dayMeta[d]) state.dayMeta[d] = "casa";
+        if(!state.energyMeta[d]) state.energyMeta[d] = "alta";
+      }
+
+      loadState();
+
+// NOVO: se vier ?dia=X na URL, usamos esse dia
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const diaParam = parseInt(params.get("dia"), 10);
+      if (!isNaN(diaParam) && diaParam >= 1 && diaParam <= 14) {
+        state.selectedDay = diaParam;
+      }
+    } catch (e) {
+      console.warn("Não foi possível ler o parâmetro ?dia=", e);
+    }
+
+      // reforça defaults caso o localStorage não tenha
+      for(let d=1; d<=14; d++){
+        if(!state.dayMeta[d]) state.dayMeta[d] = "casa";
+        if(!state.energyMeta[d]) state.energyMeta[d] = "alta";
+      }
+
+      buildDaySelect();
+      daySelect.value = String(state.selectedDay || 1);
+
+     ensureExOptionsState(); 
+
+      syncHeaderChips();
+      renderAll();
+    })();
+    
+    // ===== PWA: registrar Service Worker =====
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(console.error);
+  });
+}
+    
+  </script>
+</body>
+</html>
