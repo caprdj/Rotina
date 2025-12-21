@@ -1,12 +1,62 @@
 {
-  "name": "Vida Fibro — Rotina, Cardápio e Inventário",
-  "short_name": "Vida Fibro",
-  "start_url": "index.html",
+  "name": "Casa — Cardápio + Inventário",
+  "short_name": "Casa",
+  "description": "Cardápio e Inventário doméstico (PWA) — funciona offline e instala no Android.",
+  "id": "./?source=pwa",
+  "start_url": "./index.html?source=pwa",
+  "scope": "./",
   "display": "standalone",
-  "theme_color": "#4b7bec",
   "background_color": "#f5f5fa",
+  "theme_color": "#4b7bec",
+  "orientation": "portrait",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cardápio",
+      "short_name": "Cardápio",
+      "url": "./cardapio.html?source=pwa",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Inventário",
+      "short_name": "Inventário",
+      "url": "./inventario.html?source=pwa",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
   ]
 }
