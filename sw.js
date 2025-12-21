@@ -1,5 +1,5 @@
-/* Casa — PWA Service Worker (GitHub Pages-friendly) */
-const CACHE_NAME = "casa-pwa-v1";
+/* App-mãe — PWA Service Worker (GitHub Pages-friendly) */
+const CACHE_NAME = "app-mae-pwa-v2";
 const ASSETS = [
   "./",
   "./index.html",

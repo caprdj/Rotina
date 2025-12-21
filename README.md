@@ -1,4 +1,4 @@
-# Casa — Cardápio + Inventário (PWA)
+# App-mãe — Cardápio + Inventário (PWA)
 
 Este repositório reúne **2 apps em 1 único PWA** (instalável no Android/Samsung).
 
